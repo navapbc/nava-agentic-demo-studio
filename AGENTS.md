@@ -8,6 +8,12 @@ fields per event kind live in `EVENT_FIELDS` in `lib/planner.mjs`; adding a
 field means changing that contract and its tests on purpose.
 
 The pipeline is `script -> voice -> record -> trace -> plan -> preview -> render`.
+The presentation pipeline adds `story plan -> presentation manifest -> demos ->
+editable deck + browser presentation + PDF + portable package`. Keep demos on
+their original shared timeline; assembly must not alter their bytes. Do not
+package recording scripts, environment values or author-machine paths. Preserve
+editable text/tables and embedded local media in the PowerPoint. Test that a
+video pauses when its slide is hidden and that media is present in the PPTX/ZIP.
 Preserve the JSON schemas (`nava.demo-script.v1`, `nava.demo-trace.v1`,
 `nava.demo-project.v1`, `nava.demo-frames.v1`, `nava.demo-voice.v1`,
 `nava.presenter-rig.v1`), add tests for every timing transform, and make media

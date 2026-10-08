@@ -1,0 +1,10 @@
+{
+  "name": "nava-presentation-studio",
+  "interface": { "displayName": "Nava Presentation Studio" },
+  "plugins": [{
+    "name": "nava-presentation-studio",
+    "source": { "source": "local", "path": "./plugins/nava-presentation-studio" },
+    "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+    "category": "Productivity"
+  }]
+}

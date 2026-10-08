@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nava Presentation Studio"
+  short_description: "Build slide stories with product demos included"
+  default_prompt: "Use $nava-presentation-studio to make an evidence-led product presentation with a polished demo included."

@@ -1,10 +1,42 @@
-# Make a product demo locally
+# Make a presentation and product demo locally
 
 The recorder, editor, music generator and MP4 exporter are MIT licensed and run
 locally. No Screen Studio purchase, paid video service or AI subscription is
 required. Kokoro narration runs locally after its first model download; `say`
 is the macOS fallback. Product agents used in an extension demo are separate
 from the video tools and may require an account or subscription.
+
+## First presentation
+
+After cloning and installing as shown below, run:
+
+```sh
+npm run presentation
+node bin/presentation-studio.mjs serve exports/presentation
+```
+
+Open <http://127.0.0.1:4311/index.html>. The output folder includes an editable
+PowerPoint with its demo embedded, a browser presentation, a PDF with video
+posters and `presentation.zip` for sharing. The example records a fictional
+portal using synthetic data. Review every slide and play the embedded clip
+before sharing. You can also reuse an existing MP4 without recording again.
+
+Install the combined storycraft and demo workflow in Codex:
+
+```sh
+codex plugin marketplace add navapbc/nava-agentic-demo-studio --ref v0.4.0
+codex plugin add nava-presentation-studio@nava-presentation-studio
+```
+
+Then ask your agent:
+
+> Use $nava-presentation-studio to turn this brief into a presentation. Read the
+> repository's AGENTS.md. Shape the story, record or reuse the product moments,
+> build editable slides with the demos included, and inspect the complete output.
+> Use synthetic data for recordings and include the scope of any evidence claims.
+
+The plugin is guidance; the cloned repo supplies the local build runtime. See
+[the presentation system guide](PRESENTATION_SYSTEM.md) for custom manifests.
 
 ## First video
 

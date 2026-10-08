@@ -3,6 +3,11 @@ node_modules/
 .model-cache/
 recordings/
 exports/
+outputs/
+dist/
+*.pptx
+*.pdf
+*.zip
 *.webm
 *.mov
 *.mp4
