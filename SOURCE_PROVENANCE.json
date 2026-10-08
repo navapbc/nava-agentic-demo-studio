@@ -1,0 +1,10 @@
+{
+  "presentationGuidance": {
+    "repository": "https://github.com/navapbc/nava-presentation-toolkit",
+    "commit": "0f10ebd",
+    "path": "plugins/nava-presentation-toolkit/skills/nava-presentation-storycraft",
+    "copied": ["references", "scripts/audit_slide_plan.mjs"],
+    "note": "Nava narrative and composition references are preserved. The combined workflow and executable generator are new."
+  },
+  "demoRuntime": { "version": "0.3.0", "note": "The existing recorder, narrator, compositor, shared timeline and idle cuts remain available through demo-studio." }
+}

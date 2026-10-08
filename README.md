@@ -1,15 +1,58 @@
-# Nava Agentic Demo Studio
+# Nava Presentation Studio
 
-A free, local-first alternative to Screen Studio that agents can drive end to
-end. An agent writes a short demo script; one command records it in headless
-Chrome, narrates it, scores it, edits it, and exports a polished 1080p60 MP4 with
-a talking-head presenter in the corner. No human steps, no paid services, and no
-recording is uploaded by the studio. MIT licensed; no Screen Studio license,
-paid video service, or AI subscription is required for recording and editing.
-Automation of the product being demonstrated may have its own requirements.
+Version 0.4 combines the Nava presentation toolkit and product demo studio in
+one local workflow: shape the story, generate editable slides, record or reuse
+product demos, and package the presentation for sharing. A single manifest
+builds a PowerPoint with embedded videos, a browser presentation, a reading PDF
+and a portable ZIP. Text and tables stay editable; recordings keep their
+original timing. The existing `demo-studio` commands still work.
+
+The recorder, slide generator and exporter are MIT licensed. No Screen Studio
+license, paid video service or model API is required to build or present.
+Studio never uploads a recording or presentation. An authoring agent or the
+product being demonstrated may have its own account requirements.
 
 New teammates can start with [the team quick start](docs/TEAM_QUICKSTART.md).
 For tightening an existing recording, see [editing waits and parallel work](docs/EDITING.md).
+
+## First presentation
+
+Requires Node 20+ and Google Chrome.
+
+```sh
+npm ci
+npm run doctor
+npm run presentation
+node bin/presentation-studio.mjs serve exports/presentation
+```
+
+Open <http://127.0.0.1:4311/index.html>, or unzip `presentation.zip` and open
+`index.html` in Chrome. The bundled example records a fictional benefits portal.
+For your own project, copy [the presentation manifest](examples/presentation-system.presentation.json)
+and replace its demo with a recording script or existing MP4:
+
+```sh
+node bin/presentation-studio.mjs build path/to/presentation.json --out exports/my-presentation
+```
+
+See [the presentation system guide](docs/PRESENTATION_SYSTEM.md) for authoring,
+formats and playback limits. The PDF shows video posters. Studio does not export
+the entire deck as one narrated movie.
+
+## Install the combined Codex plugin
+
+The plugin packages Nava storycraft, the story-plan auditor and the Studio
+workflow. Install it from the repo you can access:
+
+```sh
+codex plugin marketplace add navapbc/nava-agentic-demo-studio --ref v0.4.0
+codex plugin add nava-presentation-studio@nava-presentation-studio
+```
+
+For the personal copy, substitute `gobrando/nava-agentic-demo-studio` in the
+marketplace command. The plugin provides instructions; clone this repository
+and run `npm ci` for its local recording and build runtime. Existing presentation
+templates remain authoritative. The starter theme is a Studio theme.
 
 ![Contact sheet of the sample demo](docs/benefits-portal-contact-sheet.jpg)
 
@@ -300,4 +343,5 @@ npm run e2e
 ```
 
 `npm test` runs the unit tests and needs no browser. `npm run e2e` records and
-renders a short demo and needs Chrome.
+renders a short demo, builds a presentation and checks embedded media and
+browser playback; it needs Chrome.

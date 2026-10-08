@@ -1,0 +1,14 @@
+{
+  "schema": "nava.presentation.v1",
+  "title": "Nava Presentation Studio",
+  "audience": "Product teams creating a presentation",
+  "purpose": "Demonstrate a local workflow that includes product recordings in a presentation",
+  "demos": [{ "id": "benefits-demo", "script": "benefits-portal.script.json", "posterAtSeconds": 12 }],
+  "slides": [
+    { "id": "cover", "layout": "cover", "eyebrow": "Nava Presentation Studio", "title": "A product story with the demo included", "body": ["Slides and recordings assembled into one presentation"], "notes": "This example uses the bundled fictional benefits portal." },
+    { "id": "context", "layout": "statement", "title": "Visible product evidence", "body": ["The deck explains the change.", "The recording shows what the product does."] },
+    { "id": "demo", "layout": "demo", "title": "An application demonstration", "demo": "benefits-demo", "caption": "Bundled fictional portal with synthetic applicant data", "notes": "The demo is recorded locally by the existing video studio. This example makes no claims about a live government site or production deployment." },
+    { "id": "formats", "layout": "table", "title": "The presentation package", "columns": ["Format", "Use"], "rows": [["PowerPoint", "Edit the slides and present the embedded video"], ["Browser", "Present the same story with local video playback"], ["PDF", "Read the slides with video posters"]] },
+    { "id": "closing", "layout": "closing", "title": "The next presentation starts with a brief", "body": ["Add the story and the product moments.", "Studio assembles the slides and demos locally."] }
+  ]
+}

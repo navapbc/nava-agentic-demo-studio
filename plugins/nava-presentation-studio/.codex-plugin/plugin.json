@@ -1,0 +1,21 @@
+{
+  "name": "nava-presentation-studio",
+  "version": "0.4.0",
+  "description": "Build product presentations with evidence-led slides and locally recorded demos included.",
+  "author": { "name": "Nava PBC Labs", "url": "https://www.navapbc.com/" },
+  "homepage": "https://github.com/navapbc/nava-agentic-demo-studio",
+  "repository": "https://github.com/navapbc/nava-agentic-demo-studio",
+  "keywords": ["presentations", "slides", "product-demos", "video", "nava"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Nava Presentation Studio",
+    "shortDescription": "Create slides with polished product demos included.",
+    "longDescription": "Connects Nava storycraft with a local slide generator and product demo studio. Produces an editable PowerPoint, a browser presentation with video, PDF, and a portable sharing package.",
+    "developerName": "Nava PBC Labs",
+    "category": "Productivity",
+    "capabilities": ["Write"],
+    "websiteURL": "https://github.com/navapbc/nava-agentic-demo-studio",
+    "brandColor": "#42164D",
+    "defaultPrompt": ["Use $nava-presentation-studio to create a product presentation with a polished demo included."]
+  }
+}
