@@ -26,6 +26,10 @@ test('quantitative claims keep evidence sources and scope', () => {
   const slide = { id: 'result', layout: 'statement', title: '34 entries were verified', body: ['A synthetic prototype run'] };
   const doc = { ...manifest, demos: [], slides: [slide] };
   assert.throws(() => validatePresentation(doc), /sources and scope/);
+  for (const title of ['20% of entries', '8.5%']) {
+    assert.throws(() => validatePresentation({ ...doc, slides: [{ ...slide, title }] }), /sources and scope/);
+  }
+  assert.throws(() => validatePresentation({ ...doc, slides: [{ ...slide, title: 'Observed work', caption: '34 entries' }] }), /sources and scope/);
   assert.equal(validatePresentation({ ...doc, slides: [{ ...slide, sources: ['run audit'], scope: 'One synthetic run; no submission' }] }).slides[0].title, slide.title);
 });
 
