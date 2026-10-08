@@ -1,0 +1,17 @@
+{
+  "schema": "nava.demo-trace.v1",
+  "title": "Parallel benefits applications",
+  "durationMs": 42000,
+  "viewport": { "width": 1920, "height": 1080 },
+  "rawVideo": "/recordings/parallel-apps.mov",
+  "presenter": "/assets/fictional-presenter.png",
+  "events": [
+    { "atMs": 1800, "kind": "milestone", "label": "Load the synthetic client record" },
+    { "atMs": 4200, "kind": "click", "x": 0.887, "y": 0.715, "label": "Select several applications" },
+    { "atMs": 5900, "kind": "click", "x": 0.881, "y": 0.91, "label": "Start the application queue" },
+    { "atMs": 7600, "kind": "milestone", "label": "Each application starts in its own tab" },
+    { "atMs": 18200, "kind": "milestone", "label": "Agents map, review, fill, and verify fields" },
+    { "atMs": 33300, "kind": "click", "x": 0.894, "y": 0.62, "label": "Review an application checkpoint" },
+    { "atMs": 38500, "kind": "milestone", "label": "Applications stop before submission" }
+  ]
+}

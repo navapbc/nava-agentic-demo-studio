@@ -1,0 +1,39 @@
+{
+  "schema": "nava.demo-script.v1",
+  "title": "The Form-Filling Assistant in Chrome — Codex",
+  "slug": "form-filler-extension-codex",
+  "recorder": "window",
+  "extensions": ["../../nava-form-filler-extension"],
+  "sidePanel": true,
+  "window": { "x": 40, "y": 40, "width": 1440, "height": 900 },
+  "startUrl": "examples/fixtures/benefits-portal/index.html",
+  "voice": { "provider": "kokoro", "voice": "af_heart", "speed": 1.30 },
+  "music": { "style": "warm-pop", "volume": 0.58 },
+  "frame": { "kind": "browser", "url": "benefits.example.org/apply" },
+  "style": { "background": "aurora" },
+  "presenter": { "image": "assets/fictional-presenter.png", "rig": "assets/fictional-presenter.rig.json" },
+  "intro": { "eyebrow": "Nava Labs", "title": "The Form-Filling Assistant", "subtitle": "A caseworker's co-pilot in Chrome's side panel" },
+  "outro": { "eyebrow": "Nava Form-Filling Assistant", "title": "Fills verified values", "subtitle": "Submission always stays with the caseworker" },
+  "setup": [
+    {"do": "click", "in": "sidepanel", "target": {"text": "Model runtime"}},
+    {"do": "select", "in": "sidepanel", "target": "#model-provider", "value": "codex"},
+    {"do": "type", "in": "sidepanel", "target": "#model-endpoint", "text": "http://127.0.0.1:4174", "clear": true, "delayMs": 0},
+    {"do": "type", "in": "sidepanel", "target": "#model-token", "text": {"env": "NAVA_MODEL_BRIDGE_TOKEN"}, "clear": true, "delayMs": 0},
+    {"do": "click", "in": "sidepanel", "target": {"role": "button", "name": "Use this model runtime"}},
+    {"do": "wait", "in": "sidepanel", "for": {"text": "Codex CLI subscription ready"}, "timeoutMs": 30000}
+  ],
+  "steps": [
+    {"do": "pause", "ms": 400, "say": "This is the Nava Form-Filling Assistant. It works in Chrome's side panel, right next to the benefits application a caseworker has open."},
+    {"do": "click", "target": "#start", "label": "Open the application", "say": "Here, a caseworker has started an application for a client."},
+    {"do": "click", "in": "sidepanel", "target": "[data-action=choose-json]", "label": "Bring in client data", "say": "In the assistant, they bring in the client's information. For this demo, a fictional sample record.", "waitForSpeech": false},
+    {"do": "click", "in": "sidepanel", "target": "[data-action=use-sample]", "label": "Use a fictional sample record", "waitForSpeech": false},
+    {"do": "click", "in": "sidepanel", "target": {"role": "button", "name": "Continue"}, "label": "Continue"},
+    {"do": "click", "in": "sidepanel", "target": {"text": "Analyze this form"}, "label": "Analyze this form", "say": "Then they ask the assistant to work on this tab.", "waitForSpeech": false},
+    {"do": "click", "in": "sidepanel", "target": {"role": "button", "name": "Continue"}, "label": "Start the assistant"},
+    {"do": "focus", "target": "#about .grid", "label": "The application form", "say": "Now Codex takes over through the user's subscription and a local companion. One agent maps each field, another looks for gaps, and an independent reviewer approves the plan before anything is typed.", "waitForSpeech": false},
+    {"do": "wait", "for": "#phone", "until": "filled", "timeoutMs": 240000, "label": "Agents map, review, and fill"},
+    {"do": "pause", "ms": 1500, "label": "Filled"},
+    {"do": "hover", "in": "sidepanel", "target": {"text": "AI-reviewed plan"}, "label": "The reviewed plan", "say": "Every value is checked before it's written, and the assistant never submits. The caseworker reviews the answers and sends the application.", "holdMs": 800},
+    {"do": "milestone", "label": "Ready for caseworker review"}
+  ]
+}

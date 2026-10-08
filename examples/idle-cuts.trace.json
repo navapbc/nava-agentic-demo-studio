@@ -1,0 +1,13 @@
+{
+  "schema": "nava.demo-trace.v1",
+  "title": "Editing example: remove two waits",
+  "durationMs": 19000,
+  "viewport": { "width": 1280, "height": 800 },
+  "events": [
+    { "atMs": 0, "endMs": 2000, "kind": "narration", "text": "One action starts the work." },
+    { "atMs": 3000, "endMs": 8000, "kind": "wait", "label": "Planning" },
+    { "atMs": 8000, "endMs": 11000, "kind": "pause", "label": "Preserve active work at real speed" },
+    { "atMs": 11000, "endMs": 17000, "kind": "wait", "label": "Post-work rescan" },
+    { "atMs": 17000, "endMs": 19000, "kind": "narration", "text": "The completed work is ready for review." }
+  ]
+}

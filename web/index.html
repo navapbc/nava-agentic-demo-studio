@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nava Agentic Demo Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div><p class="eyebrow">Agentic demo studio</p><h1 id="title">Product demo</h1></div>
+      <div class="actions">
+        <button id="play" disabled>Play preview</button>
+        <button id="export" disabled>Export MP4</button>
+      </div>
+    </header>
+    <section class="stage-shell">
+      <canvas id="stage" width="1920" height="1080"></canvas>
+    </section>
+    <div class="timeline">
+      <input id="scrubber" type="range" min="0" max="1000" value="0" aria-label="Preview position" disabled>
+      <output id="time">0:00</output>
+    </div>
+    <p id="status" role="status">Load a project with <code>?project=/recordings/benefits-portal/project.json</code>.</p>
+  </main>
+  <script type="module" src="player.js"></script>
+</body>
+</html>

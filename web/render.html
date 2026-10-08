@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <title>Demo Studio renderer</title>
+  <style>body { margin: 0; background: #111; } canvas { width: 100%; }</style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <script type="module">
+    import { renderToMp4 } from './render.js';
+
+    const state = (window.__demoStudio = { status: 'starting', progress: 0 });
+    const params = new URLSearchParams(location.search);
+    if (!params.get('project')) state.status = 'idle';
+    else try {
+      const project = await fetch(params.get('project')).then((response) => {
+        if (!response.ok) throw new Error(`Project ${params.get('project')} returned ${response.status}.`);
+        return response.json();
+      });
+      state.status = 'rendering';
+      const result = await renderToMp4(project, {
+        canvas: document.querySelector('#stage'),
+        onProgress: ({ stage, progress }) => {
+          state.progress = progress;
+          console.log(`[render] ${stage} ${Math.round(progress * 100)}%`);
+        },
+      });
+      state.status = 'uploading';
+      const upload = await fetch(`/api/export?name=${encodeURIComponent(params.get('out') || 'demo.mp4')}`, { method: 'POST', body: result.blob });
+      if (!upload.ok) throw new Error(`Upload failed with ${upload.status}.`);
+      Object.assign(state, { status: 'done', path: (await upload.json()).path, videoCodec: result.videoCodec, audioCodec: result.audioCodec, frames: result.frames, bytes: result.blob.size });
+    } catch (error) {
+      Object.assign(state, { status: 'error', error: String(error?.stack || error) });
+    }
+  </script>
+</body>
+</html>

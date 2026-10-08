@@ -1,0 +1,415 @@
+{
+  "schema": "nava.demo-project.v1",
+  "title": "Parallel benefits applications",
+  "durationMs": 42000,
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "rawVideo": "/recordings/parallel-apps.mov",
+  "source": {
+    "kind": "video",
+    "src": "/recordings/parallel-apps.mov"
+  },
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 60
+  },
+  "style": {
+    "background": [
+      "#1d1430",
+      "#4a1f4a",
+      "#8a3470"
+    ],
+    "padding": 72,
+    "radius": 20,
+    "accent": "#e05bbf"
+  },
+  "timeline": {
+    "introMs": 2400,
+    "outroMs": 2200,
+    "sourceDurationMs": 42000,
+    "outDurationMs": 28801
+  },
+  "intro": {
+    "title": "Parallel benefits applications"
+  },
+  "outro": null,
+  "events": [
+    {
+      "atMs": 1800,
+      "kind": "milestone",
+      "label": "Load the synthetic client record"
+    },
+    {
+      "atMs": 4200,
+      "kind": "click",
+      "x": 0.887,
+      "y": 0.715,
+      "label": "Select several applications"
+    },
+    {
+      "atMs": 5900,
+      "kind": "click",
+      "x": 0.881,
+      "y": 0.91,
+      "label": "Start the application queue"
+    },
+    {
+      "atMs": 7600,
+      "kind": "milestone",
+      "label": "Each application starts in its own tab"
+    },
+    {
+      "atMs": 18200,
+      "kind": "milestone",
+      "label": "Agents map, review, fill, and verify fields"
+    },
+    {
+      "atMs": 33300,
+      "kind": "click",
+      "x": 0.894,
+      "y": 0.62,
+      "label": "Review an application checkpoint"
+    },
+    {
+      "atMs": 38500,
+      "kind": "milestone",
+      "label": "Applications stop before submission"
+    }
+  ],
+  "speed": [
+    {
+      "startMs": 0,
+      "endMs": 9100,
+      "rate": 1
+    },
+    {
+      "startMs": 9100,
+      "endMs": 9550,
+      "rate": 3.27
+    },
+    {
+      "startMs": 9550,
+      "endMs": 16950,
+      "rate": 5.53
+    },
+    {
+      "startMs": 16950,
+      "endMs": 17400,
+      "rate": 3.27
+    },
+    {
+      "startMs": 17400,
+      "endMs": 19700,
+      "rate": 1
+    },
+    {
+      "startMs": 19700,
+      "endMs": 20150,
+      "rate": 4.5
+    },
+    {
+      "startMs": 20150,
+      "endMs": 32050,
+      "rate": 8
+    },
+    {
+      "startMs": 32050,
+      "endMs": 32500,
+      "rate": 4.5
+    },
+    {
+      "startMs": 32500,
+      "endMs": 42000,
+      "rate": 1
+    }
+  ],
+  "camera": [
+    {
+      "outMs": 0,
+      "x": 0.5,
+      "y": 0.5,
+      "scale": 1
+    },
+    {
+      "outMs": 5600,
+      "x": 0.5,
+      "y": 0.5,
+      "scale": 1
+    },
+    {
+      "outMs": 6450,
+      "x": 0.887,
+      "y": 0.715,
+      "scale": 1.8
+    },
+    {
+      "outMs": 7500,
+      "x": 0.887,
+      "y": 0.715,
+      "scale": 1.8
+    },
+    {
+      "outMs": 8180,
+      "x": 0.881,
+      "y": 0.91,
+      "scale": 1.8
+    },
+    {
+      "outMs": 9200,
+      "x": 0.881,
+      "y": 0.91,
+      "scale": 1.8
+    },
+    {
+      "outMs": 10100,
+      "x": 0.5,
+      "y": 0.5,
+      "scale": 1
+    },
+    {
+      "outMs": 16901,
+      "x": 0.5,
+      "y": 0.5,
+      "scale": 1
+    },
+    {
+      "outMs": 17751,
+      "x": 0.894,
+      "y": 0.62,
+      "scale": 1.8
+    },
+    {
+      "outMs": 18801,
+      "x": 0.894,
+      "y": 0.62,
+      "scale": 1.8
+    },
+    {
+      "outMs": 19701,
+      "x": 0.5,
+      "y": 0.5,
+      "scale": 1
+    },
+    {
+      "outMs": 28801,
+      "x": 0.5,
+      "y": 0.5,
+      "scale": 1
+    }
+  ],
+  "cursor": {
+    "moves": [
+      {
+        "atMs": 4200,
+        "endMs": 4200,
+        "x": 0.887,
+        "y": 0.715
+      },
+      {
+        "atMs": 5900,
+        "endMs": 5900,
+        "x": 0.881,
+        "y": 0.91
+      },
+      {
+        "atMs": 33300,
+        "endMs": 33300,
+        "x": 0.894,
+        "y": 0.62
+      }
+    ],
+    "clicks": [
+      {
+        "atMs": 4200,
+        "x": 0.887,
+        "y": 0.715
+      },
+      {
+        "atMs": 5900,
+        "x": 0.881,
+        "y": 0.91
+      },
+      {
+        "atMs": 33300,
+        "x": 0.894,
+        "y": 0.62
+      }
+    ]
+  },
+  "subtitles": [
+    {
+      "startMs": 4050,
+      "endMs": 6800,
+      "text": "Load the synthetic client record"
+    },
+    {
+      "startMs": 6450,
+      "endMs": 8400,
+      "text": "Select several applications"
+    },
+    {
+      "startMs": 8150,
+      "endMs": 10100,
+      "text": "Start the application queue"
+    },
+    {
+      "startMs": 9850,
+      "endMs": 11755,
+      "text": "Each application starts in its own tab"
+    },
+    {
+      "startMs": 13763,
+      "endMs": 15595,
+      "text": "Agents map, review, fill, and verify fields"
+    },
+    {
+      "startMs": 17751,
+      "endMs": 19701,
+      "text": "Review an application checkpoint"
+    },
+    {
+      "startMs": 22951,
+      "endMs": 25701,
+      "text": "Applications stop before submission"
+    }
+  ],
+  "voice": [],
+  "sfx": [
+    {
+      "kind": "click",
+      "outMs": 6600,
+      "x": 0.887
+    },
+    {
+      "kind": "click",
+      "outMs": 8300,
+      "x": 0.881
+    },
+    {
+      "kind": "click",
+      "outMs": 17901,
+      "x": 0.894
+    }
+  ],
+  "music": {
+    "style": "warm-pop",
+    "bpm": 92,
+    "volume": 0.7,
+    "seed": 7
+  },
+  "presenter": {
+    "image": "/assets/fictional-presenter.png",
+    "rig": null,
+    "size": 300,
+    "margin": 40,
+    "enterMs": 2100,
+    "swaps": [
+      {
+        "startMs": 6900,
+        "endMs": 9900
+      }
+    ]
+  },
+  "zooms": [
+    {
+      "startMs": 3850,
+      "peakMs": 4380,
+      "endMs": 5650,
+      "x": 0.887,
+      "y": 0.715,
+      "scale": 1.58
+    },
+    {
+      "startMs": 5550,
+      "peakMs": 6080,
+      "endMs": 7350,
+      "x": 0.881,
+      "y": 0.91,
+      "scale": 1.58
+    },
+    {
+      "startMs": 32950,
+      "peakMs": 33480,
+      "endMs": 34750,
+      "x": 0.894,
+      "y": 0.62,
+      "scale": 1.58
+    }
+  ],
+  "captions": [
+    {
+      "startMs": 1650,
+      "endMs": 4400,
+      "text": "Load the synthetic client record"
+    },
+    {
+      "startMs": 4050,
+      "endMs": 6000,
+      "text": "Select several applications"
+    },
+    {
+      "startMs": 5750,
+      "endMs": 7700,
+      "text": "Start the application queue"
+    },
+    {
+      "startMs": 7450,
+      "endMs": 10200,
+      "text": "Each application starts in its own tab"
+    },
+    {
+      "startMs": 18050,
+      "endMs": 20800,
+      "text": "Agents map, review, fill, and verify fields"
+    },
+    {
+      "startMs": 33150,
+      "endMs": 35100,
+      "text": "Review an application checkpoint"
+    },
+    {
+      "startMs": 38350,
+      "endMs": 41100,
+      "text": "Applications stop before submission"
+    }
+  ],
+  "narration": [
+    {
+      "atMs": 1650,
+      "text": "Load the synthetic client record"
+    },
+    {
+      "atMs": 4050,
+      "text": "Select several applications"
+    },
+    {
+      "atMs": 5750,
+      "text": "Start the application queue"
+    },
+    {
+      "atMs": 7450,
+      "text": "Each application starts in its own tab"
+    },
+    {
+      "atMs": 18050,
+      "text": "Agents map, review, fill, and verify fields"
+    },
+    {
+      "atMs": 33150,
+      "text": "Review an application checkpoint"
+    },
+    {
+      "atMs": 38350,
+      "text": "Applications stop before submission"
+    }
+  ],
+  "audio": {
+    "clickSound": true,
+    "backgroundMusic": "generated:warm-pop",
+    "voiceover": null,
+    "duckingDb": -10
+  }
+}

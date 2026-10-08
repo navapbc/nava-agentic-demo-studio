@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <title>Music audition</title>
+  <style>body { margin: 0; background: #111; } canvas { display: block; }</style>
+</head>
+<body>
+  <canvas id="spectrogram"></canvas>
+  <script type="module">
+    // Renders one generated music style over a demo-shaped timeline (intro
+    // card, a fast-forward, outro card) and reports it three ways: a WAV to
+    // listen to, a spectrogram with the arrangement marked, and level metrics.
+    import { analyzeMusic, encodeWav16, spectrogram, toDb } from '/lib/audio-analysis.mjs';
+    import { auditionProject, planMusic } from '/lib/music-plan.mjs';
+    import { renderMix } from './audio.js';
+
+    const state = (window.__demoStudio = { status: 'starting' });
+    const params = new URLSearchParams(location.search);
+    const upload = async (name, body) => {
+      const response = await fetch(`/api/export?name=${encodeURIComponent(name)}`, { method: 'POST', body });
+      if (!response.ok) throw new Error(`Upload of ${name} failed with ${response.status}.`);
+      return (await response.json()).path;
+    };
+
+    function drawSpectrogram(spectrum, plan) {
+      const canvas = document.querySelector('#spectrogram');
+      const height = 420;
+      canvas.width = spectrum.columns;
+      canvas.height = height + 40;
+      const context = canvas.getContext('2d');
+      const image = context.createImageData(spectrum.columns, height);
+      const minHz = 30;
+      const maxHz = 16000;
+      const binHz = spectrum.sampleRate / spectrum.fftSize;
+      const color = (value) => {
+        const t = Math.min(1, Math.max(0, (value + 100) / 80));
+        return [Math.round(255 * Math.min(1, t * 1.6)), Math.round(255 * Math.max(0, (t - 0.35) * 1.5)), Math.round(255 * (0.35 + (0.5 * Math.sin(Math.PI * t))))];
+      };
+      for (let row = 0; row < height; row += 1) {
+        const hz = minHz * ((maxHz / minHz) ** (1 - (row / (height - 1))));
+        const bin = Math.min(spectrum.bins - 1, Math.round(hz / binHz));
+        for (let column = 0; column < spectrum.columns; column += 1) {
+          const [r, g, b] = color(10 * Math.log10(spectrum.power[(column * spectrum.bins) + bin] + 1e-12));
+          const offset = ((row * spectrum.columns) + column) * 4;
+          image.data.set([r, g, b, 255], offset);
+        }
+      }
+      context.putImageData(image, 0, 0);
+      const x = (seconds) => (seconds / (spectrum.secondsPerColumn * spectrum.columns)) * spectrum.columns;
+      const tint = { intro: '#7aa2ff', groove: '#9dfc8b', lift: '#ffd166', outro: '#ff7aa2' };
+      context.fillStyle = '#111';
+      context.fillRect(0, height, spectrum.columns, 40);
+      for (const bar of plan.bars || []) {
+        context.fillStyle = tint[bar.section];
+        context.fillRect(x(Math.max(0, bar.startS)), height + 4, Math.max(1, x(bar.endS) - x(Math.max(0, bar.startS)) - 1), 10);
+      }
+      for (const riser of plan.risers || []) {
+        context.fillStyle = '#fff';
+        context.fillRect(x(riser.startS), height + 20, x(riser.endS) - x(riser.startS), 4);
+      }
+      context.font = '12px system-ui';
+      context.fillStyle = '#ddd';
+      for (const hz of [60, 250, 1000, 4000, 12000]) {
+        const row = (1 - (Math.log(hz / minHz) / Math.log(maxHz / minHz))) * (height - 1);
+        context.fillText(hz >= 1000 ? `${hz / 1000}k` : String(hz), 4, row);
+      }
+      context.fillText(`${plan.label || plan.style} · ${plan.bpm?.toFixed(1)} bpm · intro / groove / lift / outro bars, risers in white`, 40, height + 36);
+      return canvas;
+    }
+
+    try {
+      const style = params.get('style') || 'warm-pop';
+      const project = auditionProject({ style, seconds: Number(params.get('seconds') || 30) });
+      const plan = planMusic(project);
+      state.status = 'rendering';
+      const mix = await renderMix(project);
+      const channels = [mix.getChannelData(0), mix.getChannelData(1)];
+      const spectrum = spectrogram(channels, mix.sampleRate, { columns: 1200 });
+      const report = analyzeMusic(channels, mix.sampleRate, plan, spectrum);
+      state.report = { style, bpm: Number(plan.bpm.toFixed(2)), ...report, bars: report.bars.map((bar) => `${bar.section[0]}${bar.rmsDb}`).join(' ') };
+      if (params.get('out')) state.wav = await upload(params.get('out'), encodeWav16(channels, mix.sampleRate));
+      if (params.get('sheet')) {
+        const canvas = drawSpectrogram(spectrum, plan);
+        state.sheet = await upload(params.get('sheet'), await new Promise((resolve) => canvas.toBlob(resolve, 'image/png')));
+      }
+      state.status = 'done';
+    } catch (error) {
+      Object.assign(state, { status: 'error', error: String(error?.stack || error) });
+    }
+  </script>
+</body>
+</html>

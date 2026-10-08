@@ -1,0 +1,10 @@
+{
+  "schema": "nava.demo-script.v1",
+  "title": "Editing example: remove two waits",
+  "startUrl": "examples/fixtures/benefits-portal/index.html",
+  "introMs": 1600,
+  "outroMs": 1600,
+  "presenter": { "kind": "orb", "color": "#8b5cf6" },
+  "speed": { "cuts": [{ "startMs": 3000, "endMs": 8000 }, { "startMs": 11000, "endMs": 17000 }] },
+  "steps": [{ "do": "pause", "ms": 100 }]
+}

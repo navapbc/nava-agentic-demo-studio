@@ -1,0 +1,139 @@
+{
+  "schema": "nava.demo-script.v1",
+  "title": "The Form-Filling Assistant with Gemini Nano",
+  "slug": "form-filler-extension-nano",
+  "recorder": "window",
+  "extensions": [
+    "../../nava-form-filling-assistant-chrome-extension"
+  ],
+  "sidePanel": true,
+  "window": {
+    "x": 40,
+    "y": 40,
+    "width": 1440,
+    "height": 900
+  },
+  "startUrl": "examples/fixtures/benefits-portal/index.html",
+  "voice": {
+    "provider": "kokoro",
+    "voice": "af_heart"
+  },
+  "music": {
+    "style": "lofi",
+    "volume": 0.65
+  },
+  "frame": {
+    "kind": "browser",
+    "url": "benefits.example.org/apply"
+  },
+  "style": {
+    "background": "aurora"
+  },
+  "presenter": {
+    "image": "assets/fictional-presenter.png",
+    "rig": "assets/fictional-presenter.rig.json"
+  },
+  "intro": {
+    "eyebrow": "Nava Labs",
+    "title": "On-device form filling",
+    "subtitle": "The Form-Filling Assistant with Chrome's built-in Gemini Nano"
+  },
+  "outro": {
+    "eyebrow": "Nava Form-Filling Assistant",
+    "title": "Fills verified values",
+    "subtitle": "Submission always stays with the caseworker"
+  },
+  "steps": [
+    {
+      "do": "pause",
+      "ms": 400,
+      "say": "This is the Nava Form-Filling Assistant. It works in Chrome's side panel, right next to the benefits application a caseworker has open."
+    },
+    {
+      "do": "click",
+      "target": "#start",
+      "label": "Open the application",
+      "say": "Here, a caseworker has started an application for a client."
+    },
+    {
+      "do": "click",
+      "in": "sidepanel",
+      "target": "[data-action=choose-json]",
+      "label": "Bring in client data",
+      "say": "In the assistant, they bring in the client's information. For this demo, a fictional sample record.",
+      "waitForSpeech": false
+    },
+    {
+      "do": "click",
+      "in": "sidepanel",
+      "target": "[data-action=use-sample]",
+      "label": "Use a fictional sample record",
+      "waitForSpeech": false
+    },
+    {
+      "do": "click",
+      "in": "sidepanel",
+      "target": {
+        "role": "button",
+        "name": "Continue"
+      },
+      "label": "Continue"
+    },
+    {
+      "do": "click",
+      "in": "sidepanel",
+      "target": {
+        "text": "Analyze this form"
+      },
+      "label": "Analyze this form",
+      "say": "Then they ask the assistant to work on this tab.",
+      "waitForSpeech": false
+    },
+    {
+      "do": "click",
+      "in": "sidepanel",
+      "target": {
+        "role": "button",
+        "name": "Continue"
+      },
+      "label": "Start the assistant"
+    },
+    {
+      "do": "focus",
+      "target": "#about .grid",
+      "label": "The application form",
+      "say": "Now Gemini Nano takes over. It runs entirely inside Chrome on this computer, so the client's information never leaves the machine. One agent maps each field, another looks for gaps, and a reviewer approves the plan.",
+      "waitForSpeech": false
+    },
+    {
+      "do": "wait",
+      "for": "#phone",
+      "until": "filled",
+      "timeoutMs": 600000,
+      "label": "Agents map, review, and fill"
+    },
+    {
+      "do": "pause",
+      "ms": 1500,
+      "label": "Filled"
+    },
+    {
+      "do": "hover",
+      "in": "sidepanel",
+      "target": {
+        "text": "AI-reviewed plan"
+      },
+      "label": "The reviewed plan",
+      "say": "Every value is checked before it's written, and the assistant never submits. The caseworker reviews the answers and sends the application.",
+      "holdMs": 800
+    },
+    {
+      "do": "milestone",
+      "label": "Ready for caseworker review"
+    }
+  ],
+  "browser": {
+    "profile": "chrome-nano",
+    "onDeviceAI": true
+  }
+}

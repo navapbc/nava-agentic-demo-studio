@@ -1,0 +1,30 @@
+{
+  "name": "nava-agentic-demo-studio",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent-native screen recording, auto-editing, and product-demo rendering tools.",
+  "bin": {
+    "demo-studio": "bin/demo-studio.mjs"
+  },
+  "scripts": {
+    "make": "node bin/demo-studio.mjs make examples/benefits-portal.script.json",
+    "plan": "node bin/demo-studio.mjs plan examples/parallel-apps.trace.json examples/parallel-apps.project.json",
+    "serve": "node bin/demo-studio.mjs serve",
+    "doctor": "node bin/demo-studio.mjs doctor",
+    "check": "for file in bin/*.mjs lib/*.mjs web/*.js; do node --check \"$file\" || exit 1; done",
+    "test": "node --test test/*.test.mjs",
+    "e2e": "node --test test/e2e/*.e2e.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "mp4-muxer": "^5.2.2",
+    "playwright-core": "^1.63.0"
+  },
+  "optionalDependencies": {
+    "kokoro-js": "^1.2.1"
+  }
+}

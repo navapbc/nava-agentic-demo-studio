@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <title>Presenter rig preview</title>
+  <style>body { margin: 0; background: #1a1422; } canvas { display: block; }</style>
+</head>
+<body>
+  <canvas id="sheet"></canvas>
+  <script type="module">
+    // Renders a presenter rig at several mouth and eyelid states so a rig can be
+    // tuned (or checked by an agent) without rendering a whole video.
+    import { Presenter } from './presenter.js';
+
+    const state = (window.__demoStudio = { status: 'starting' });
+    const params = new URLSearchParams(location.search);
+    try {
+      const rigUrl = params.get('rig') || '/assets/fictional-presenter.rig.json';
+      const rig = await fetch(rigUrl).then((response) => response.json());
+      const image = params.get('image') || new URL(rig.image, new URL(rigUrl, location.href)).pathname;
+      const presenter = await Presenter.load(image, rig);
+      const size = Number(params.get('size') || 420);
+      const shapes = [
+        ['rest', { open: 0, wide: 0, nod: 0 }, 0],
+        ['"m" closed', { open: 0.12, wide: 0.1, nod: 0 }, 0],
+        ['"ah"', { open: 0.95, wide: 0, nod: 0 }, 0],
+        ['"eh"', { open: 0.55, wide: 0.35, nod: 0 }, 0],
+        ['"ee"', { open: 0.42, wide: 0.95, nod: 0 }, 0],
+        ['"oo"', { open: 0.5, wide: -0.95, nod: 0 }, 0],
+        ['stress nod', { open: 0.6, wide: 0.2, nod: 1 }, 0],
+        ['blink', { open: 0, wide: 0, nod: 0 }, presenter.blinks[0] + 85],
+        ['glance at demo', { open: 0, wide: 0, nod: 0 }, 1500],
+      ];
+      const columns = Number(params.get('columns') || 4);
+      const cell = size + 24;
+      const canvas = document.querySelector('#sheet');
+      canvas.width = (Math.min(columns, shapes.length) * cell) + 24;
+      canvas.height = Math.ceil(shapes.length / columns) * (size + 70) + 24;
+      const context = canvas.getContext('2d');
+      context.fillStyle = '#1a1422';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.font = '600 20px system-ui';
+      context.fillStyle = '#ddd';
+      shapes.forEach(([label, mouth, tMs], index) => {
+        const x = 24 + ((index % columns) * cell);
+        const y = 24 + (Math.floor(index / columns) * (size + 70));
+        presenter.draw(context, { x, y, size, tMs, mouth: { ...mouth, speaking: mouth.open } });
+        context.fillStyle = '#ddd';
+        context.fillText(label, x + 8, y + size + 34);
+      });
+      if (params.get('out')) {
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        const upload = await fetch(`/api/export?name=${encodeURIComponent(params.get('out'))}`, { method: 'POST', body: blob });
+        state.path = (await upload.json()).path;
+      }
+      state.status = 'done';
+    } catch (error) {
+      Object.assign(state, { status: 'error', error: String(error?.stack || error) });
+    }
+  </script>
+</body>
+</html>

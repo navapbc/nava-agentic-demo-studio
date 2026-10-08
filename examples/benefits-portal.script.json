@@ -1,0 +1,48 @@
+{
+  "schema": "nava.demo-script.v1",
+  "title": "An agent fills a benefits application",
+  "slug": "benefits-portal",
+  "startUrl": "examples/fixtures/benefits-portal/index.html?delay=8000",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "deviceScaleFactor": 2,
+  "voice": {
+    "provider": "kokoro",
+    "voice": "af_heart"
+  },
+  "music": { "style": "upbeat", "volume": 0.6 },
+  "frame": { "kind": "browser", "url": "benefits.example.org/apply" },
+  "style": { "background": "nava" },
+  "presenter": {
+    "image": "assets/fictional-presenter.png",
+    "rig": "assets/fictional-presenter.rig.json"
+  },
+  "intro": {
+    "eyebrow": "Nava Labs · Product demo",
+    "title": "An agent fills a benefits application",
+    "subtitle": "Recorded, edited, and narrated automatically"
+  },
+  "outro": {
+    "eyebrow": "Nava Agentic Demo Studio",
+    "title": "Stops before submission",
+    "subtitle": "A person always reviews and submits"
+  },
+  "steps": [
+    {"do": "pause", "ms": 400, "say": "Here's how an agent can complete a benefits application from start to finish, using a synthetic client record."},
+    {"do": "click", "target": "#start", "label": "Start application", "say": "It opens the county portal and starts a new application."},
+    {"do": "type", "target": "#first-name", "text": "Celeste", "label": "Enter first name", "say": "Then it fills in the applicant's details, one field at a time.", "waitForSpeech": false},
+    {"do": "type", "target": "#last-name", "text": "Rivera", "label": "Enter last name", "waitForSpeech": false},
+    {"do": "type", "target": "#dob", "text": "04/12/1988", "label": "Enter date of birth", "waitForSpeech": false},
+    {"do": "type", "target": "#phone", "text": "(555) 014-2231", "label": "Enter phone number"},
+    {"do": "click", "target": "#about-next", "label": "Continue to household"},
+    {"do": "click", "target": "#size .choice:nth-child(3)", "label": "Household of three", "say": "Next, it answers the household questions and picks the programs the family needs.", "waitForSpeech": false},
+    {"do": "click", "target": "#food", "label": "Food assistance", "waitForSpeech": false},
+    {"do": "click", "target": "#care", "label": "Child care"},
+    {"do": "click", "target": "#household-next", "label": "Continue to review"},
+    {"do": "wait", "for": "#review h2", "label": "Checking answers"},
+    {"do": "hover", "target": "#ready", "label": "Review page", "say": "And it stops at the review page, so a caseworker can check every answer before anything is submitted.", "holdMs": 600},
+    {"do": "milestone", "label": "Stopped before submission"}
+  ]
+}

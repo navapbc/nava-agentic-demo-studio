@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apply for benefits · Sample County</title>
+  <!-- Fictional fixture for recording demos offline. Not a real agency. -->
+  <style>
+    :root { --ink:#1b1b29; --muted:#5d5d73; --line:#e3e1ea; --brand:#3b2f8f; --brand-2:#6c4ad6; --ok:#1f7a55; --bg:#f6f5fb; font-family: Inter, -apple-system, system-ui, sans-serif; color: var(--ink); }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); }
+    .top { display:flex; align-items:center; gap:14px; padding: 18px 48px; background:#fff; border-bottom:1px solid var(--line); }
+    .seal { width:38px; height:38px; border-radius:50%; background: conic-gradient(from 200deg, var(--brand), var(--brand-2), #b14fc5, var(--brand)); }
+    .top strong { font-size:18px; }
+    .top span { color: var(--muted); font-size:14px; margin-left:auto; }
+    main { max-width: 980px; margin: 36px auto; padding: 0 32px; }
+    .hero { display:grid; grid-template-columns: 1.3fr 1fr; gap: 36px; align-items:center; background:#fff; border:1px solid var(--line); border-radius:22px; padding: 48px; }
+    .hero h1 { font-size: 44px; line-height:1.08; margin: 0 0 16px; letter-spacing:-.02em; }
+    .hero p { color: var(--muted); font-size: 18px; line-height:1.55; margin: 0 0 28px; }
+    .programs { display:grid; gap:12px; }
+    .program { display:flex; gap:12px; align-items:center; padding:14px 16px; border-radius:14px; background: var(--bg); font-weight:600; }
+    .program i { width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-style:normal; background:#fff; }
+    button.primary { font: inherit; font-weight: 700; font-size: 17px; border: 0; border-radius: 12px; padding: 15px 26px; color:#fff; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 10px 24px rgba(59,47,143,.28); cursor:pointer; }
+    button.primary:hover { filter: brightness(1.08); }
+    button.primary[disabled] { opacity:.5; box-shadow:none; cursor:not-allowed; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:22px; padding: 40px 48px; }
+    .steps { display:flex; gap:10px; margin-bottom: 28px; }
+    .steps li { list-style:none; flex:1; padding-top:12px; border-top:4px solid var(--line); color: var(--muted); font-size:14px; font-weight:600; }
+    .steps li.done, .steps li.current { border-color: var(--brand-2); color: var(--ink); }
+    h2 { margin: 0 0 6px; font-size: 30px; letter-spacing:-.01em; }
+    .lede { color: var(--muted); margin: 0 0 28px; font-size:16px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+    label { display:grid; gap:8px; font-weight:600; font-size:15px; }
+    input[type=text], input[type=tel] { font: inherit; font-size:17px; padding: 13px 14px; border:1.5px solid var(--line); border-radius:11px; outline:none; }
+    input:focus { border-color: var(--brand-2); box-shadow: 0 0 0 4px rgba(108,74,214,.15); }
+    .actions { display:flex; justify-content:flex-end; margin-top: 32px; gap:12px; }
+    .choices { display:flex; gap:10px; flex-wrap:wrap; }
+    .choice { font: inherit; font-weight:700; font-size:18px; width:58px; height:52px; border-radius:12px; border:1.5px solid var(--line); background:#fff; cursor:pointer; }
+    .choice[aria-pressed=true] { border-color: var(--brand-2); background: #efeafd; color: var(--brand); }
+    fieldset { border:0; padding:0; margin: 0 0 26px; }
+    legend { font-weight:700; margin-bottom: 12px; font-size:16px; }
+    .check { display:flex; align-items:center; gap:12px; padding: 14px 16px; border:1.5px solid var(--line); border-radius:12px; margin-bottom:10px; font-weight:600; cursor:pointer; }
+    .check input { width:20px; height:20px; accent-color: var(--brand-2); }
+    .check:has(input:checked) { border-color: var(--brand-2); background:#f7f4ff; }
+    .loading { display:grid; place-items:center; text-align:center; padding: 90px 0; }
+    .spinner { width:56px; height:56px; border-radius:50%; border:5px solid #e6e1f7; border-top-color: var(--brand-2); animation: spin 0.9s linear infinite; margin-bottom: 22px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    dl { display:grid; grid-template-columns: 220px 1fr; gap: 14px 20px; margin: 0; padding: 22px 24px; border-radius:14px; background: var(--bg); }
+    dt { color: var(--muted); font-weight:600; }
+    dd { margin:0; font-weight:600; }
+    .notice { display:flex; gap:14px; align-items:flex-start; margin-top: 22px; padding: 16px 18px; border-radius:14px; background:#eaf6f0; color:#114b33; font-weight:600; line-height:1.45; }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body>
+  <div class="top"><div class="seal" aria-hidden="true"></div><strong>Sample County Benefits</strong><span>Fictional demo portal</span></div>
+  <main>
+    <section id="welcome" class="hero">
+      <div>
+        <h1>Apply for food, cash, and child care help</h1>
+        <p>One application covers several programs. Most people finish in about ten minutes, and you can review everything before you submit.</p>
+        <button class="primary" id="start">Start application</button>
+      </div>
+      <div class="programs" aria-label="Programs">
+        <div class="program"><i>🥕</i>Food assistance</div>
+        <div class="program"><i>💳</i>Cash aid</div>
+        <div class="program"><i>🧸</i>Child care</div>
+      </div>
+    </section>
+
+    <section id="about" class="card" hidden>
+      <ol class="steps"><li class="current">About you</li><li>Household</li><li>Review</li></ol>
+      <h2>About you</h2>
+      <p class="lede">Tell us who is applying.</p>
+      <div class="grid">
+        <label>First name<input type="text" id="first-name" autocomplete="off"></label>
+        <label>Last name<input type="text" id="last-name" autocomplete="off"></label>
+        <label>Date of birth<input type="text" id="dob" placeholder="MM/DD/YYYY" autocomplete="off"></label>
+        <label>Phone<input type="tel" id="phone" autocomplete="off"></label>
+      </div>
+      <div class="actions"><button class="primary" id="about-next">Continue</button></div>
+    </section>
+
+    <section id="household" class="card" hidden>
+      <ol class="steps"><li class="done">About you</li><li class="current">Household</li><li>Review</li></ol>
+      <h2>Your household</h2>
+      <p class="lede">Include everyone who lives and eats with you.</p>
+      <fieldset>
+        <legend>How many people live in your home?</legend>
+        <div class="choices" id="size">
+          <button class="choice" aria-pressed="false">1</button><button class="choice" aria-pressed="false">2</button><button class="choice" aria-pressed="false">3</button><button class="choice" aria-pressed="false">4</button><button class="choice" aria-pressed="false">5+</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Which programs are you applying for?</legend>
+        <label class="check"><input type="checkbox" value="Food assistance" id="food">Food assistance</label>
+        <label class="check"><input type="checkbox" value="Cash aid" id="cash">Cash aid</label>
+        <label class="check"><input type="checkbox" value="Child care" id="care">Child care</label>
+      </fieldset>
+      <div class="actions"><button class="primary" id="household-next">Continue</button></div>
+    </section>
+
+    <section id="checking" class="card loading" hidden>
+      <div class="spinner" aria-hidden="true"></div>
+      <h2>Checking your answers…</h2>
+      <p class="lede">This usually takes a few seconds.</p>
+    </section>
+
+    <section id="review" class="card" hidden>
+      <ol class="steps"><li class="done">About you</li><li class="done">Household</li><li class="current">Review</li></ol>
+      <h2>Review your application</h2>
+      <p class="lede">Check each answer before you certify and submit.</p>
+      <dl id="summary"></dl>
+      <div class="notice" id="ready">✓ Ready for review. The agent stopped here: a person reviews, certifies, and submits.</div>
+      <div class="actions"><button class="primary" id="submit" disabled>Certify and submit</button></div>
+    </section>
+  </main>
+  <script>
+    const show = (id) => document.querySelectorAll('main > section').forEach((section) => { section.hidden = section.id !== id; });
+    const value = (id) => document.getElementById(id).value.trim();
+    document.getElementById('start').onclick = () => show('about');
+    document.getElementById('about-next').onclick = () => show('household');
+    document.querySelectorAll('#size .choice').forEach((button) => {
+      button.onclick = () => document.querySelectorAll('#size .choice').forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+    });
+    document.getElementById('household-next').onclick = () => {
+      show('checking');
+      const size = document.querySelector('#size [aria-pressed=true]')?.textContent || '—';
+      const programs = [...document.querySelectorAll('.check input:checked')].map((input) => input.value).join(', ') || '—';
+      const rows = [['Applicant', `${value('first-name')} ${value('last-name')}`], ['Date of birth', value('dob')], ['Phone', value('phone')], ['Household size', size], ['Programs', programs]];
+      document.getElementById('summary').innerHTML = rows.map(([term, detail]) => `<dt>${term}</dt><dd>${detail.replace(/</g, '&lt;')}</dd>`).join('');
+      setTimeout(() => show('review'), Number(new URLSearchParams(location.search).get('delay') || 4500));
+    };
+  </script>
+</body>
+</html>
