@@ -3,7 +3,7 @@
   "title": "Nava Presentation Studio",
   "audience": "Product teams creating a presentation",
   "purpose": "Demonstrate a local workflow that includes product recordings in a presentation",
-  "demos": [{ "id": "benefits-demo", "script": "benefits-portal.script.json", "posterAtSeconds": 12 }],
+  "demos": [{ "id": "benefits-demo", "script": "benefits-portal.script.json", "posterAtSeconds": 35 }],
   "slides": [
     { "id": "cover", "layout": "cover", "eyebrow": "Nava Presentation Studio", "title": "A product story with the demo included", "body": ["Slides and recordings assembled into one presentation"], "notes": "This example uses the bundled fictional benefits portal." },
     { "id": "context", "layout": "statement", "title": "Visible product evidence", "body": ["The deck explains the change.", "The recording shows what the product does."] },
