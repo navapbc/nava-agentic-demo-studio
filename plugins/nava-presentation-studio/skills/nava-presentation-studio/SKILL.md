@@ -48,6 +48,9 @@ For shared demos, set `"presenter": { "kind": "orb", "color": "#8b5cf6" }`
 for a purple voice orb, or `"presenter": false` for voiceover with no avatar
 overlay. Do not use portrait presenters in shared demos, screenshots or posters.
 Review reused MP4s and their posters for the same requirement.
+The preview's **Show voice orb** checkbox controls the overlay in preview and
+export. Commands accept `--orb on|off`; use `render PROJECT OUT --orb off` to
+export an existing Studio project with voiceover and no orb, without recording again.
 
 Keep the orb above scene/title overlays. Trim silent planning and completed-work
 waits with `speed.cuts`; preserve speech and actual product activity. For parallel

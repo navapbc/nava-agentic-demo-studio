@@ -8,6 +8,16 @@ h1 { margin:6px 0 20px; font-size:clamp(28px,4vw,52px); }
 button { border:1px solid #fff3; border-radius:999px; padding:12px 18px; background:#be3c9f; color:#fff; font-weight:800; cursor:pointer; }
 button+button { background:#fff1; }
 .actions { display:flex; gap:10px; padding-bottom:20px; }
+.preview-settings { display:flex; align-items:center; flex-wrap:wrap; gap:10px 20px; margin:0 0 18px; }
+.preview-settings p { margin:0; color:#cfc7d1; font-size:13px; }
+.orb-toggle { display:inline-flex; position:relative; align-items:center; gap:10px; font-size:14px; font-weight:700; cursor:pointer; }
+.orb-toggle input { position:absolute; z-index:1; width:40px; height:24px; margin:0; opacity:0; cursor:inherit; }
+.switch-track { display:block; width:40px; height:24px; padding:3px; border:1px solid #fff4; border-radius:999px; background:#ffffff14; transition:background .15s; }
+.switch-track::after { content:""; display:block; width:16px; height:16px; border-radius:50%; background:#d9d3dd; transition:transform .15s; }
+.orb-toggle input:checked+.switch-track { background:#8b5cf6; border-color:#b99aff; }
+.orb-toggle input:checked+.switch-track::after { transform:translateX(16px); background:#fff; }
+.orb-toggle input:focus-visible+.switch-track { outline:2px solid #f0b6e2; outline-offset:3px; }
+.orb-toggle:has(input:disabled) { opacity:.45; cursor:not-allowed; }
 .stage-shell { position:relative; overflow:hidden; border-radius:22px; background:#050506; box-shadow:0 28px 80px #0008; aspect-ratio:16/9; }
 canvas { display:block; width:100%; height:100%; }
 button:disabled { opacity:.45; cursor:not-allowed; }

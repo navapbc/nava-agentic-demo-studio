@@ -10,15 +10,19 @@
   <canvas id="stage"></canvas>
   <script type="module">
     import { renderToMp4 } from './render.js';
+    import { withOrbVisibility } from '/lib/presenter-config.mjs';
 
     const state = (window.__demoStudio = { status: 'starting', progress: 0 });
     const params = new URLSearchParams(location.search);
     if (!params.get('project')) state.status = 'idle';
     else try {
-      const project = await fetch(params.get('project')).then((response) => {
+      let project = await fetch(params.get('project')).then((response) => {
         if (!response.ok) throw new Error(`Project ${params.get('project')} returned ${response.status}.`);
         return response.json();
       });
+      const orb = params.get('orb');
+      if (orb !== null && orb !== 'on' && orb !== 'off') throw new Error('Orb must be on or off.');
+      if (orb !== null) project = withOrbVisibility(project, orb === 'on');
       state.status = 'rendering';
       const result = await renderToMp4(project, {
         canvas: document.querySelector('#stage'),

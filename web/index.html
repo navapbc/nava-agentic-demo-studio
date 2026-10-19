@@ -16,6 +16,14 @@
         <button id="export" disabled>Export MP4</button>
       </div>
     </header>
+    <section class="preview-settings" aria-label="Preview settings">
+      <label class="orb-toggle" for="show-orb">
+        <input id="show-orb" type="checkbox" role="switch" aria-describedby="orb-help" disabled>
+        <span class="switch-track" aria-hidden="true"></span>
+        <span>Show voice orb</span>
+      </label>
+      <p id="orb-help">Voiceover stays on. Exports use this setting.</p>
+    </section>
     <section class="stage-shell">
       <canvas id="stage" width="1920" height="1080"></canvas>
     </section>

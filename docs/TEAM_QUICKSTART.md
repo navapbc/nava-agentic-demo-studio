@@ -82,6 +82,16 @@ The orb is drawn in front of the scene and title cards. Use `"presenter": false`
 for voiceover and captions without an avatar overlay. Shared demos use one of
 these faceless options.
 
+In the preview, use **Show voice orb** to turn the orb on or off. Voiceover,
+music and captions continue; **Export MP4** uses the setting shown. This choice
+lasts for the current preview session. Keep it in the script for future builds,
+or pass `--orb on` / `--orb off` to the command:
+
+```sh
+node bin/demo-studio.mjs make examples/benefits-portal.script.json --orb off
+node bin/demo-studio.mjs render recordings/benefits-portal/project.json exports/benefits-portal-voice-only.mp4 --orb off
+```
+
 Recordings, models, credentials and exports stay out of Git. Use synthetic data
 even when recording official sites. Keep final submission and CAPTCHA completion
 with a human. The studio never uploads recordings, but any remote website you

@@ -54,12 +54,32 @@ marketplace command. The plugin provides instructions; clone this repository
 and run `npm ci` for its local recording and build runtime. Existing presentation
 templates remain authoritative. The starter theme is a Studio theme.
 
-The bundled demo uses a purple voice orb that responds to the narration.
-Choose the orb or voice-only video for shared demos.
+## Choose your video style
+
+In the preview, turn **Show voice orb** on or off. Voiceover, music and captions
+continue either way, and **Export MP4** uses your selected setting.
+
+**Purple orb:** a voice presence that responds to the narration.
+
+![A frame from the sample demo with a purple voice orb](docs/frame-browser-orb.png)
+
+**Voiceover only:** the browser extension and product stay in view without an
+orb overlay. This example shows WIC and IHSS applications side by side, using
+fictional applicant data. These views use the existing two-application recording
+with the orb hidden.
+
+![The WIC and IHSS browser-extension demo with voiceover and no orb](docs/parallel-applications-voice-only.png)
+
+<details>
+<summary>More frames from both styles</summary>
+
+![The browser extension beside BenefitsCal, with narration and no orb](docs/parallel-applications-voice-only-extension.png)
+
+![Moments from the two-application demo with no orb overlay](docs/parallel-applications-voice-only-contact-sheet.png)
 
 ![Contact sheet of the sample demo with a purple voice orb](docs/benefits-portal-orb-contact-sheet.png)
 
-![A frame from the sample demo with a purple voice orb](docs/frame-browser-orb.png)
+</details>
 
 ## What you get
 
@@ -76,8 +96,8 @@ Choose the orb or voice-only video for shared demos.
 | Title and closing cards | `intro` / `outro` cards in the script |
 | AI voiceover | Kokoro-82M, an Apache-2.0 neural voice, runs locally, faster than real time on an M1. macOS `say` is the fallback. The recorder paces the actions to the narration |
 | Background music | Five generated styles (`upbeat`, `synthwave`, `lofi`, `ambient`, `warm-pop`) with real sound design (drums, sidechain pumping, supersaws, FM electric piano, risers, vinyl). The arrangement follows the demo: a sparse intro under the title card, the groove on the reveal (tempo nudged so it lands on a bar line), a lift during fast-forwards, and a resolving outro. Or bring your own track (`music.file`), looped and loudness-matched. Always ducked under the voice, with no licensing |
-| Purple voice orb | A code-rendered voice presence that breathes, pulses, and emits waveform filaments in sync with narration. Set `presenter.kind` to `orb`; no face or image asset is required |
-| Voice-only video | Set `presenter` to `false` for narration over the product recording with no presenter overlay |
+| Optional purple voice orb | Turn **Show voice orb** on or off in the preview. A code-rendered orb responds to narration; no image asset is required. Exports use your selection |
+| Voice-only video | Turn the orb off, pass `--orb off`, or set `presenter` to `false` in the script. Voiceover, music and captions continue |
 | Subtitles | Timed captions that highlight each word as it is spoken |
 | Record real windows | ScreenCaptureKit capture of any window or display, including browser chrome and extension side panels, with a recorded pointer log driving zoom and cursor |
 | Export | Frame-by-frame WebCodecs render to H.264/AAC MP4 at 1080p or 4K, 30 or 60 fps: deterministic, no dropped frames |
@@ -299,8 +319,11 @@ use synthetic demo data because typed values are visible in the video itself.
 
 ## Voice presence
 
-Shared demos use a faceless voice presence. For a purple orb that responds to
-the narration, add this script option:
+Use **Show voice orb** in the preview to show or hide the orb. The choice applies
+to the current preview and its MP4 export. It keeps your place in the video and
+does not interrupt the voiceover. Reopening a project uses its saved settings.
+
+For a repeatable build, choose the orb in your script:
 
 ```json
 "presenter": { "kind": "orb", "color": "#8b5cf6" }
@@ -312,7 +335,20 @@ For narration over the product video with no overlay, use:
 "presenter": false
 ```
 
-Both options keep voiceover and captions. The orb requires no image asset.
+You can also choose at the command line without editing the script:
+
+```sh
+node bin/demo-studio.mjs make examples/benefits-portal.script.json --orb off
+node bin/demo-studio.mjs render recordings/benefits-portal/project.json exports/benefits-portal-orb.mp4 --orb on
+```
+
+`--orb on|off` works with `make`, `record`, `plan`, `render` and `screen record`.
+It overrides the saved visual choice for that command. Rendering an existing
+project changes the orb without recording again or retiming the video.
+The control changes Studio's overlay. To change an orb already baked into an
+MP4, reopen the original Studio project.
+
+Both options keep voiceover, music and captions. The orb requires no image asset.
 Legacy portrait rigs remain available for explicit local experiments with
 `presenter.kind: "portrait"`, an `image` and a `rig`; they are outside the shared
 demo workflow. Use only fictional likenesses.

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import { writeFile } from 'node:fs/promises';
+import { realpath, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildProject, validateTrace } from '../lib/planner.mjs';
+import { orbPresenterOptions } from '../lib/presenter-config.mjs';
 
 export { buildProject, validateTrace };
 
@@ -10,13 +11,14 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 
 const USAGE = `Nava Agentic Demo Studio
 
-  demo-studio make SCRIPT.json [--out OUT.mp4] [--4k] [--fps 30] [--headed]
+  demo-studio make SCRIPT.json [--out OUT.mp4] [--4k] [--fps 30] [--headed] [--orb on|off]
       Voice, record, plan, and render a demo script end to end.
   demo-studio voice SCRIPT.json          Synthesize narration only.
-  demo-studio record SCRIPT.json [--headed] [--dry-run]
+  demo-studio record SCRIPT.json [--headed] [--dry-run] [--orb on|off]
       Synthesize narration and record the script (writes recordings/<slug>/).
-  demo-studio plan TRACE.json PROJECT.json [--voice MANIFEST.json] [--script SCRIPT.json]
-  demo-studio render PROJECT.json [OUT.mp4]
+  demo-studio plan TRACE.json PROJECT.json [--voice MANIFEST.json] [--script SCRIPT.json] [--orb on|off]
+  demo-studio render PROJECT.json [OUT.mp4] [--orb on|off]
+      Show or hide the orb visual; narration stays enabled. Omit --orb to use saved settings.
   demo-studio inspect VIDEO.mp4 [SHEET.png] [--at 4.5,12]
       Contact sheet (or full-size frames at given seconds) for reviewing an export.
   demo-studio rig RIG.json [OUT.png]          Preview an explicitly supplied local presenter rig.
@@ -26,12 +28,17 @@ const USAGE = `Nava Agentic Demo Studio
   demo-studio serve [PORT]                    Preview UI at /web/?project=...
   demo-studio doctor                          Check Chrome, codecs, and voices.`;
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const positional = [];
   const flags = {};
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
     if (!value.startsWith('--')) positional.push(value);
+    else if (value === '--orb' || value.startsWith('--orb=')) {
+      const selection = value === '--orb' ? argv[++index] : value.slice('--orb='.length);
+      if (!['on', 'off'].includes(selection)) throw new Error('--orb must be on or off (for example --orb off).');
+      flags.orb = selection;
+    }
     else if (['--headed', '--4k', '--dry-run', '--presenter', '--no-render', '--json'].includes(value)) flags[value.slice(2)] = true;
     else flags[value.slice(2)] = argv[++index];
   }
@@ -43,6 +50,7 @@ const log = (line) => console.log(line);
 async function main() {
   const [command = 'help', ...rest] = process.argv.slice(2);
   const { positional, flags } = parseArgs(rest);
+  const orb = flags.orb === undefined ? undefined : flags.orb === 'on';
   const pipeline = () => import('../lib/pipeline.mjs');
 
   if (command === 'plan') {
@@ -56,6 +64,7 @@ async function main() {
       const script = await readJson(resolve(flags.script));
       options = { voice, rig: await loadRig(root, script), settings: JSON.parse(JSON.stringify(settingsFrom(script))) };
     }
+    if (orb !== undefined) options.settings = { ...options.settings, presenter: orb ? orbPresenterOptions(options.settings?.presenter ?? trace.presenter) : false };
     const project = buildProject(trace, options);
     await writeFile(resolve(outputPath), `${JSON.stringify(project, null, 2)}\n`);
     log(`Wrote ${resolve(outputPath)}`);
@@ -75,7 +84,7 @@ async function main() {
       ...(flags['4k'] ? { width: 3840, height: 2160 } : {}),
       ...(flags.fps ? { fps: Number(flags.fps) } : {}),
     };
-    const result = await makeDemo(resolve(positional[0] || 'examples/benefits-portal.script.json'), { root, out: flags.out, headless: !flags.headed, output: Object.keys(output).length ? output : undefined, log });
+    const result = await makeDemo(resolve(positional[0] || 'examples/benefits-portal.script.json'), { root, out: flags.out, headless: !flags.headed, output: Object.keys(output).length ? output : undefined, orb, log });
     log(`Done: ${result.outPath} (${(result.state.bytes / 1024 / 1024).toFixed(1)} MB, ${result.state.frames} frames, ${result.state.videoCodec}${result.state.audioCodec ? ` + ${result.state.audioCodec}` : ''})`);
     log(`Preview: npm run serve, then open /web/?project=/recordings/${result.slug}/project.json`);
     return;
@@ -84,7 +93,8 @@ async function main() {
   if (command === 'voice' || command === 'record') {
     const { readJson, recordStep, planStep, resolveScriptPaths, voiceStep } = await pipeline();
     const { slugFor, validateScript } = await import('../lib/script.mjs');
-    const script = resolveScriptPaths(validateScript(await readJson(resolve(positional[0]))), resolve(positional[0]));
+    let script = resolveScriptPaths(validateScript(await readJson(resolve(positional[0]))), resolve(positional[0]));
+    if (orb !== undefined) script = { ...script, presenter: orb ? orbPresenterOptions(script.presenter) : false };
     const recordingDir = join(root, 'recordings', slugFor(script));
     const voice = await voiceStep({ root, script, recordingDir, log });
     if (command === 'voice') return;
@@ -103,7 +113,7 @@ async function main() {
     const { renderProject } = await import('../lib/render.mjs');
     const projectPath = resolve(positional[0]);
     const outPath = resolve(positional[1] || join(root, 'exports', `${basename(dirname(projectPath))}.mp4`));
-    const state = await renderProject({ root, projectUrl: urlFor(root, projectPath), outName: basename(outPath), exportsDir: dirname(outPath), log });
+    const state = await renderProject({ root, projectUrl: urlFor(root, projectPath), outName: basename(outPath), exportsDir: dirname(outPath), orb, log });
     log(`Done: ${state.path}`);
     return;
   }
@@ -149,7 +159,7 @@ async function main() {
         title: flags.caption,
         style: flags.wallpaper ? { background: flags.wallpaper } : undefined,
         music: flags.music === 'none' ? false : (flags.music ? { style: flags.music } : undefined),
-        presenter: Boolean(flags.presenter),
+        presenter: orb ?? Boolean(flags.presenter),
         render: !flags['no-render'],
         output: flags['4k'] ? { width: 3840, height: 2160 } : undefined,
         log,
@@ -162,8 +172,9 @@ async function main() {
   demo-studio screen list [--json]         Windows and displays you can record
   demo-studio screen record [--app NAME [--title TEXT] | --window ID | --display ID]
                             [--seconds N] [--name SLUG] [--caption TITLE] [--music STYLE|none]
-                            [--wallpaper NAME] [--presenter] [--4k] [--no-render]
-  --presenter adds the purple voice orb; screen recordings otherwise use no presenter.`);
+                            [--wallpaper NAME] [--orb on|off] [--4k] [--no-render]
+  --orb on adds the purple voice orb; screen recordings otherwise use no presenter.
+  --presenter remains an alias for --orb on; an explicit --orb value takes precedence.`);
     return;
   }
 
@@ -239,7 +250,8 @@ async function main() {
   log(USAGE);
 }
 
-if (resolve(process.argv[1] || '') === fileURLToPath(import.meta.url)) {
+const invokedPath = process.argv[1] ? await realpath(resolve(process.argv[1])).catch(() => null) : null;
+if (invokedPath === fileURLToPath(import.meta.url)) {
   main().catch((error) => {
     console.error(`demo-studio: ${error.message}`);
     process.exitCode = 1;
