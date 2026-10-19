@@ -16,8 +16,8 @@
   "frame": { "kind": "browser", "url": "benefits.example.org/apply" },
   "style": { "background": "nava" },
   "presenter": {
-    "image": "assets/fictional-presenter.png",
-    "rig": "assets/fictional-presenter.rig.json"
+    "kind": "orb",
+    "color": "#8b5cf6"
   },
   "intro": {
     "eyebrow": "Nava Labs · Product demo",

@@ -6,7 +6,7 @@
 - [x] Automatic click zooms and click ripples
 - [x] Automatic idle-span compression, with speed ramps and a fast-forward badge
 - [x] Caption and narration cue track
-- [x] Fictional presenter picture-in-picture asset
+- [x] Faceless purple voice orb and voice-only video options
 - [x] Browser canvas preview and export (now MP4, frame-accurate)
 - [x] Agent-driven browser recorder (headless Chrome, retina screencast)
 - [x] ScreenCaptureKit recorder with window/display selection
@@ -27,12 +27,12 @@
 - [x] Neural local voice (Kokoro-82M) with `say` fallback
 - [ ] Optional cloud voice providers behind the `voice.provider` interface
 
-## Milestone 3 — presenter and polish
+## Milestone 3 — voice presence and polish
 
-- [x] Animate the fictional presenter from the narration track (mesh-warp jaw, lip spread and rounding, teeth, nods, brow raises, blinks, gaze)
-- [x] Presenter avoids covering the action; branded backdrop, title and closing cards
+- [x] Animate the purple voice orb from the narration track
+- [x] Voice presence avoids covering the action; branded backdrop, title and closing cards
 - [x] H.264/AAC MP4 export (WebCodecs in Chrome, no native renderer needed)
-- [ ] Presenter layouts (circle, rounded card, side-by-side) and lower thirds
+- [ ] Voice orb layouts and lower thirds
 - [ ] Visual regression tests for zoom framing and overlay safe areas
 - [x] Motion blur on fast pans and cursor moves, keystroke sounds, cursor idle-hide
 - [x] Adaptive zoom depth, cursor follow, spline camera, cursor shapes (hand, I-beam)
@@ -55,15 +55,13 @@ starting.
    `nava-form-filling-activity-*.json` files) into a demo script: map each
    agent step to a `do` step and draft `say` lines, keeping values synthetic.
 3. **Voice providers.** Kokoro is in. Next: word timings (a forced aligner or a
-   TTS that returns durations) to drive exact visemes, and optional cloud voices
+   TTS that returns durations) for more precise caption highlighting, and optional cloud voices
    behind `resolveVoiceProvider`. Keep the manifest shape (`durationMs`,
    `envelope`, `mouth`).
-4. **Presenter quality.** Add a video presenter track (`presenter.clips` per
-   narration line) so a generative lip-sync model can replace the mesh rig when
-   one is available. Options: a Weave model through the Figma connection
-   (needs the Figma account linked to Weave), a hosted avatar API, or a local
-   model; check model and weight licences before shipping. Also presenter
-   shapes (rounded card) and a second fictional presenter with its own rig.
+4. **Faceless voice presence.** Refine the purple orb's narration response,
+   overlay placement and layout options. Keep voice-only video available with
+   `presenter: false`. Shared demos and their screenshots use these faceless
+   options; portrait rigs remain explicit local experiments.
 5. **Screen Studio import.** Read a `.screenstudio` project's recording and
    cursor data into `rawVideo` + trace so existing recordings can be re-edited.
 6. **Framing regression tests.** Golden-frame checks for camera windows,

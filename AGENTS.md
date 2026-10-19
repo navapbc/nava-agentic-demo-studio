@@ -21,6 +21,10 @@ features optional when a machine lacks a codec or speech provider.
 
 ## Making a demo
 
+Shared demos, screenshots and posters use the purple voice orb or voice-only
+video (`presenter: false`). Keep portrait experiments local; do not add face
+assets or talking-head screenshots to the repository.
+
 1. Write a script under `examples/` using synthetic demo data only. Typed values
    are visible in the video even though they never reach the trace.
 2. Run `node bin/demo-studio.mjs make <script>`.

@@ -105,7 +105,7 @@ test('embeds voice clips, subtitles, and click effects in output time', () => {
 });
 
 test('moves the presenter away from actions under its corner', () => {
-  const corner = { ...trace, presenter: '/assets/fictional-presenter.png', events: [{ atMs: 3000, kind: 'click', x: 0.97, y: 0.96 }] };
+  const corner = { ...trace, presenter: '/assets/local-presenter.png', events: [{ atMs: 3000, kind: 'click', x: 0.97, y: 0.96 }] };
   const project = buildProject(corner);
   assert.equal(project.presenter.swaps.length, 1);
   assert.ok(project.presenter.swaps[0].startMs < project.sfx[0].outMs);

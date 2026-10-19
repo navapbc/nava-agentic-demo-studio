@@ -16,7 +16,8 @@
     const state = (window.__demoStudio = { status: 'starting' });
     const params = new URLSearchParams(location.search);
     try {
-      const rigUrl = params.get('rig') || '/assets/fictional-presenter.rig.json';
+      const rigUrl = params.get('rig');
+      if (!rigUrl) throw new Error('Supply an explicit local rig path with ?rig=/path/to/rig.json.');
       const rig = await fetch(rigUrl).then((response) => response.json());
       const image = params.get('image') || new URL(rig.image, new URL(rigUrl, location.href)).pathname;
       const presenter = await Presenter.load(image, rig);

@@ -54,15 +54,12 @@ marketplace command. The plugin provides instructions; clone this repository
 and run `npm ci` for its local recording and build runtime. Existing presentation
 templates remain authoritative. The starter theme is a Studio theme.
 
-![Contact sheet of the sample demo](docs/benefits-portal-contact-sheet.jpg)
+The bundled demo uses a purple voice orb that responds to the narration.
+Choose the orb or voice-only video for shared demos.
 
-![A frame from the sample demo](docs/frame-browser-presenter.jpg)
+![Contact sheet of the sample demo with a purple voice orb](docs/benefits-portal-orb-contact-sheet.png)
 
-The extension-window pipeline has also been validated end to end with the real
-unpacked Nava Form-Filling Assistant, the paired Codex subscription runtime,
-generated warm-pop music, local narration, and the animated presenter:
-
-![Contact sheet from the naturally narrated Codex-powered extension demo](docs/form-filler-extension-codex-natural-voice-contact-sheet.png)
+![A frame from the sample demo with a purple voice orb](docs/frame-browser-orb.png)
 
 ## What you get
 
@@ -79,8 +76,8 @@ generated warm-pop music, local narration, and the animated presenter:
 | Title and closing cards | `intro` / `outro` cards in the script |
 | AI voiceover | Kokoro-82M, an Apache-2.0 neural voice, runs locally, faster than real time on an M1. macOS `say` is the fallback. The recorder paces the actions to the narration |
 | Background music | Five generated styles (`upbeat`, `synthwave`, `lofi`, `ambient`, `warm-pop`) with real sound design (drums, sidechain pumping, supersaws, FM electric piano, risers, vinyl). The arrangement follows the demo: a sparse intro under the title card, the groove on the reveal (tempo nudged so it lands on a bar line), a lift during fast-forwards, and a resolving outro. Or bring your own track (`music.file`), looped and loudness-matched. Always ducked under the voice, with no licensing |
-| Talking head in the corner | A fictional presenter animated from one portrait with a triangle-mesh face rig. Audio-driven jaw, lip spread and rounding, visible teeth, nods and brow raises on stressed syllables, blinks at phrase ends, glances toward the demo during pauses, and it moves out of the way when the action is under it |
-| Voice orb alternative | Set `presenter.kind` to `orb` for a code-rendered purple voice presence that breathes, pulses, and emits waveform filaments in sync with narration—no face or image asset required |
+| Purple voice orb | A code-rendered voice presence that breathes, pulses, and emits waveform filaments in sync with narration. Set `presenter.kind` to `orb`; no face or image asset is required |
+| Voice-only video | Set `presenter` to `false` for narration over the product recording with no presenter overlay |
 | Subtitles | Timed captions that highlight each word as it is spoken |
 | Record real windows | ScreenCaptureKit capture of any window or display, including browser chrome and extension side panels, with a recorded pointer log driving zoom and cursor |
 | Export | Frame-by-frame WebCodecs render to H.264/AAC MP4 at 1080p or 4K, 30 or 60 fps: deterministic, no dropped frames |
@@ -125,6 +122,7 @@ Open <http://127.0.0.1:4310/web/?project=/recordings/benefits-portal/project.jso
      "title": "An agent fills a benefits application",
      "startUrl": "examples/fixtures/benefits-portal/index.html",
      "voice": { "provider": "kokoro", "voice": "af_heart" },
+     "presenter": { "kind": "orb", "color": "#8b5cf6" },
      "frame": { "kind": "browser", "url": "benefits.example.org/apply" },
      "intro": { "eyebrow": "Nava Labs", "title": "An agent fills a benefits application" },
      "steps": [
@@ -180,8 +178,9 @@ Script-level options:
 - `music`: `{ "style": "upbeat" | "synthwave" | "lofi" | "ambient" | "warm-pop", "volume": 0.6 }`,
   `{ "file": "assets/music/track.mp3", "volume", "startAtS", "loop" }`, or
   `false`. Preview the styles with `node bin/demo-studio.mjs music`.
-- `presenter` (or `false`), `intro`, `outro`.
-  Use `{ "kind": "orb", "color": "#8b5cf6" }` for the animated voice orb.
+- `presenter`: `{ "kind": "orb", "color": "#8b5cf6" }` for the animated
+  purple voice orb, or `false` for voice-only video. `intro` and `outro`
+  configure opening and closing cards.
 - `zoom`: `minScale`, `maxScale`, `targetShare`, `sessionGapMs`, and more.
   `introMs` and `outroMs` control the duration of the opening and closing cards.
   `speed.cuts` accepts ordered `{ "startMs", "endMs" }` ranges in source milliseconds.
@@ -261,7 +260,7 @@ window: real mouse events still reach it.
 | `plan TRACE PROJECT [--voice MANIFEST] [--script SCRIPT]` | Trace to project (edit decision list) |
 | `render PROJECT [OUT.mp4]` | Headless MP4 render of a project |
 | `inspect VIDEO [SHEET.png] [--at s,s]` | Contact sheet or full-size frames |
-| `rig [RIG.json] [OUT.png]` | Preview a presenter rig's mouth and blink states |
+| `rig RIG.json [OUT.png]` | Preview an explicitly configured local portrait rig |
 | `music [--style NAME\|all\|list] [--seconds 30]` | Render music auditions (M4A/WAV), spectrograms, and levels |
 | `screen access` | Request macOS Screen Recording permission |
 | `screen list [--json]` | Windows and displays you can record |
@@ -298,17 +297,25 @@ rejects any other field, so a typed value cannot slip into a trace, and the e2e
 test (`npm run e2e`) checks a real recording for the typed strings. Scripts must
 use synthetic demo data because typed values are visible in the video itself.
 
-## The presenter
+## Voice presence
 
-`assets/fictional-presenter.png` is an entirely fictional, AI-generated person.
-`assets/fictional-presenter.rig.json` marks the lip line, eye openings, eyelid
-skin bands, crop, and head pivot in image pixels. To add a presenter, add a
-portrait and a rig, then check it with `node bin/demo-studio.mjs rig
-assets/your.rig.json`:
+Shared demos use a faceless voice presence. For a purple orb that responds to
+the narration, add this script option:
 
-![Presenter rig preview](docs/presenter-rig.jpg)
+```json
+"presenter": { "kind": "orb", "color": "#8b5cf6" }
+```
 
-Do not use a real person's likeness.
+For narration over the product video with no overlay, use:
+
+```json
+"presenter": false
+```
+
+Both options keep voiceover and captions. The orb requires no image asset.
+Legacy portrait rigs remain available for explicit local experiments with
+`presenter.kind: "portrait"`, an `image` and a `rig`; they are outside the shared
+demo workflow. Use only fictional likenesses.
 
 ## Known limits
 
@@ -326,12 +333,8 @@ Do not use a real person's likeness.
 - Gemini Nano downloads once, about 4 GB, into the named profile
   (`"browser": { "profile": "chrome-nano", "onDeviceAI": true }`). It does not
   reuse the copy in your everyday Chrome profile.
-- Kokoro sounds natural but has no word timings, so lip shapes come from the
-  audio spectrum rather than phonemes. That is close at picture-in-picture
-  size, but not frame-accurate the way a phoneme aligner would be.
-- The talking head is a mesh warp of one still portrait: no head turns and no
-  lighting changes. A generative lip-sync model would look more alive; see
-  work package 4 in [ROADMAP.md](ROADMAP.md).
+- Kokoro has no word timings, so caption word timings are estimated. Review
+  caption pacing with the exported narration before sharing.
 - Legacy `rawVideo` projects (a `.mov`/`.mp4` plus a hand-written trace) still
   plan and render, but seeking a long H.264 file per frame is slow.
 

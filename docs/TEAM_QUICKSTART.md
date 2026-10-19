@@ -52,7 +52,8 @@ node bin/demo-studio.mjs inspect exports/benefits-portal.mp4
 ```
 
 The example uses a bundled fictional portal and synthetic applicant data. The
-export is `exports/benefits-portal.mp4`. Look at the generated contact sheet and
+purple voice orb responds to the narration; no face image is used. The export
+is `exports/benefits-portal.mp4`. Look at the generated contact sheet and
 play the MP4 before sharing it. On machines without a speech engine, set
 `"voice": { "provider": "none" }` in your script to use captions.
 
@@ -77,7 +78,9 @@ play the MP4 before sharing it. On machines without a speech engine, set
 Copy [the example script](../examples/benefits-portal.script.json), set your
 product URL and selectors, and use `node bin/demo-studio.mjs make SCRIPT.json`.
 Use `"presenter": { "kind": "orb", "color": "#8b5cf6" }` for a voice orb.
-The orb is drawn in front of the scene and title cards.
+The orb is drawn in front of the scene and title cards. Use `"presenter": false`
+for voiceover and captions without an avatar overlay. Shared demos use one of
+these faceless options.
 
 Recordings, models, credentials and exports stay out of Git. Use synthetic data
 even when recording official sites. Keep final submission and CAPTCHA completion

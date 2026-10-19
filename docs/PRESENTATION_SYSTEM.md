@@ -6,6 +6,11 @@ manifest describes the deck and its product recordings. The local builder
 records requested demos, generates editable slides, embeds the media and creates
 a package ready to present.
 
+For shared demo clips, use the purple voice orb with
+`"presenter": { "kind": "orb", "color": "#8b5cf6" }`, or use
+`"presenter": false` for voiceover without an avatar overlay. Review reused
+MP4s and their posters against the same faceless presentation standard.
+
 Start with `npm ci`, `npm run doctor`, then `npm run presentation`. For a custom
 project, copy [the starter manifest](../examples/presentation-system.presentation.json).
 The [manifest and build reference](../plugins/nava-presentation-studio/skills/nava-presentation-studio/references/presentation-build.md)

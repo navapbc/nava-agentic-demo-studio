@@ -19,7 +19,7 @@ const USAGE = `Nava Agentic Demo Studio
   demo-studio render PROJECT.json [OUT.mp4]
   demo-studio inspect VIDEO.mp4 [SHEET.png] [--at 4.5,12]
       Contact sheet (or full-size frames at given seconds) for reviewing an export.
-  demo-studio rig [RIG.json] [OUT.png]        Preview a presenter rig's mouth and blink states.
+  demo-studio rig RIG.json [OUT.png]          Preview an explicitly supplied local presenter rig.
   demo-studio music [--style NAME|all|list] [--seconds 30]
       Audition generated music styles (WAV/M4A, spectrogram, levels).
   demo-studio screen access | list | record  Record any window or display (see: demo-studio screen)
@@ -162,7 +162,8 @@ async function main() {
   demo-studio screen list [--json]         Windows and displays you can record
   demo-studio screen record [--app NAME [--title TEXT] | --window ID | --display ID]
                             [--seconds N] [--name SLUG] [--caption TITLE] [--music STYLE|none]
-                            [--wallpaper NAME] [--presenter] [--4k] [--no-render]`);
+                            [--wallpaper NAME] [--presenter] [--4k] [--no-render]
+  --presenter adds the purple voice orb; screen recordings otherwise use no presenter.`);
     return;
   }
 
@@ -200,9 +201,10 @@ async function main() {
   }
 
   if (command === 'rig') {
+    if (!positional[0]) throw new Error('Supply a local rig path: demo-studio rig RIG.json [OUT.png].');
     const { urlFor } = await pipeline();
     const { runToolPage } = await import('../lib/render.mjs');
-    const rigPath = resolve(positional[0] || join(root, 'assets/fictional-presenter.rig.json'));
+    const rigPath = resolve(positional[0]);
     const outPath = resolve(positional[1] || join(root, 'exports', `${basename(rigPath, '.json')}.png`));
     const query = new URLSearchParams({ rig: urlFor(root, rigPath), out: basename(outPath), size: flags.size || '420' });
     const state = await runToolPage({ root, path: `/web/rig.html?${query}`, exportsDir: dirname(outPath) });

@@ -301,7 +301,8 @@
     "seed": 7
   },
   "presenter": {
-    "image": "/assets/fictional-presenter.png",
+    "kind": "orb",
+    "color": "#8b5cf6",
     "rig": null,
     "size": 300,
     "margin": 40,

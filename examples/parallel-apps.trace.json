@@ -4,7 +4,7 @@
   "durationMs": 42000,
   "viewport": { "width": 1920, "height": 1080 },
   "rawVideo": "/recordings/parallel-apps.mov",
-  "presenter": "/assets/fictional-presenter.png",
+  "presenter": { "kind": "orb", "color": "#8b5cf6" },
   "events": [
     { "atMs": 1800, "kind": "milestone", "label": "Load the synthetic client record" },
     { "atMs": 4200, "kind": "click", "x": 0.887, "y": 0.715, "label": "Select several applications" },

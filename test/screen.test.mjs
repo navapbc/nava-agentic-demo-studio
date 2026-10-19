@@ -33,6 +33,7 @@ test('builds a valid screen trace that plans without drawn browser chrome', () =
   assert.equal(trace.source.origin, 'screen');
   const project = buildProject(trace);
   assert.equal(project.style.frame.kind, 'none');
+  assert.equal(project.presenter, null);
   assert.ok(project.camera.some((key) => key.scale > 1.3), 'clicks still drive the zoom');
 });
 
@@ -62,13 +63,25 @@ test('records a driven window end to end through the helper protocol', async () 
   const root = await mkdtemp(join(tmpdir(), 'demo-studio-screen-'));
   process.env.DEMO_STUDIO_CAPTURE_HELPER = fileURLToPath(new URL('./fixtures/fake-capture.mjs', import.meta.url));
   try {
-    const result = await recordScreenDemo({ root, target: { app: 'Fake' }, seconds: 0.6, slug: 'fake', title: 'Fake demo', render: false, log: () => {} });
-    const trace = JSON.parse(await readFile(join(result.recordingDir, 'trace.json'), 'utf8'));
-    assert.equal(trace.source.origin, 'screen');
-    assert.equal(trace.events.filter((event) => event.kind === 'click').length, 1);
-    const project = JSON.parse(await readFile(result.projectPath, 'utf8'));
-    assert.equal(project.intro.title, 'Fake demo');
-    assert.equal(project.style.frame.kind, 'none');
+    for (const presenter of [false, true]) {
+      const result = await recordScreenDemo({ root, target: { app: 'Fake' }, seconds: 0.6, slug: presenter ? 'orb' : 'voiceover', title: 'Fake demo', presenter, render: false, log: () => {} });
+      const trace = JSON.parse(await readFile(join(result.recordingDir, 'trace.json'), 'utf8'));
+      assert.equal(trace.source.origin, 'screen');
+      assert.equal(trace.events.filter((event) => event.kind === 'click').length, 1);
+      const project = JSON.parse(await readFile(result.projectPath, 'utf8'));
+      assert.equal(project.intro.title, 'Fake demo');
+      assert.equal(project.style.frame.kind, 'none');
+      if (presenter) {
+        assert.equal(project.presenter.kind, 'orb');
+        assert.equal(project.presenter.color, '#8b5cf6');
+        assert.equal(project.presenter.image, undefined);
+        assert.equal(project.presenter.rig, null);
+      } else {
+        assert.equal(trace.presenter, false);
+        assert.equal(project.presenter, null);
+        assert.equal(buildProject(trace).presenter, null, 'standalone replanning keeps the screen recording opt-out');
+      }
+    }
   } finally {
     delete process.env.DEMO_STUDIO_CAPTURE_HELPER;
     await rm(root, { recursive: true, force: true });

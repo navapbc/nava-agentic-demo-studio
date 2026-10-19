@@ -44,6 +44,11 @@ plan -> preview -> render` pipeline. Use synthetic data for tests and shipped
 examples. For actual work, follow the user's approved data and site boundaries.
 Read the runtime's AGENTS.md before recording.
 
+For shared demos, set `"presenter": { "kind": "orb", "color": "#8b5cf6" }`
+for a purple voice orb, or `"presenter": false` for voiceover with no avatar
+overlay. Do not use portrait presenters in shared demos, screenshots or posters.
+Review reused MP4s and their posters for the same requirement.
+
 Keep the orb above scene/title overlays. Trim silent planning and completed-work
 waits with `speed.cuts`; preserve speech and actual product activity. For parallel
 tasks, every captured tab must share one clock and one edit map. Do not independently
