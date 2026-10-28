@@ -1,6 +1,6 @@
 {
   "name": "nava-presentation-studio",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Build product presentations with evidence-led slides and locally recorded demos included.",
   "author": { "name": "Nava PBC Labs", "url": "https://www.navapbc.com/" },
   "homepage": "https://github.com/navapbc/nava-agentic-demo-studio",

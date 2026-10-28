@@ -1,4 +1,8 @@
 .DS_Store
+.env
+.env.*
+!.env.example
+local/
 node_modules/
 .model-cache/
 recordings/

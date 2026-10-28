@@ -7,27 +7,36 @@ builds a PowerPoint with embedded videos, a browser presentation, a reading PDF
 and a portable ZIP. Text and tables stay editable; recordings keep their
 original timing. The existing `demo-studio` commands still work.
 
+This is an experimental local authoring tool, primarily tested on macOS with
+Google Chrome. It is intended for trusted scripts and projects, using synthetic
+demo data. See [known limits](#known-limits) and [security guidance](SECURITY.md).
+
 The recorder, slide generator and exporter are MIT licensed. No Screen Studio
 license, paid video service or model API is required to build or present.
-Studio never uploads a recording or presentation. An authoring agent or the
-product being demonstrated may have its own account requirements.
+Studio has no recording-upload service. Package installation, model downloads,
+an authoring agent and the product being demonstrated can use the network or
+require their own accounts.
 
 New teammates can start with [the team quick start](docs/TEAM_QUICKSTART.md).
 For tightening an existing recording, see [editing waits and parallel work](docs/EDITING.md).
 
 ## First presentation
 
-Requires Node 20+ and Google Chrome.
+Requires Node 20.9+ and Google Chrome.
 
 ```sh
+git clone https://github.com/navapbc/nava-agentic-demo-studio.git
+cd nava-agentic-demo-studio
 npm ci
 npm run doctor
 npm run presentation
 node bin/presentation-studio.mjs serve exports/presentation
 ```
 
-Open <http://127.0.0.1:4311/index.html>, or unzip `presentation.zip` and open
-`index.html` in Chrome. The bundled example records a fictional benefits portal.
+Paste `http://127.0.0.1:4311/index.html` into Chrome's address bar. The local
+server blocks cross-site navigation, so clicking a localhost link on GitHub can
+be blocked. You can also unzip `presentation.zip` and open `index.html` in Chrome.
+The bundled example records a fictional benefits portal.
 For your own project, copy [the presentation manifest](examples/presentation-system.presentation.json)
 and replace its demo with a recording script or existing MP4:
 
@@ -39,20 +48,28 @@ See [the presentation system guide](docs/PRESENTATION_SYSTEM.md) for authoring,
 formats and playback limits. The PDF shows video posters. Studio does not export
 the entire deck as one narrated movie.
 
+The first narrated build downloads the Kokoro model. If that download or the
+optional speech dependency is unavailable, set `"voice": { "provider": "none" }`
+in `examples/benefits-portal.script.json` before building; captions still work.
+For the macOS speech fallback, use `"provider": "say"`. `doctor` checks Chrome
+and codecs; it does not download or test the Kokoro model.
+
 ## Install the combined Codex plugin
 
-The plugin packages Nava storycraft, the story-plan auditor and the Studio
-workflow. Install it from the repo you can access:
+The optional plugin packages Nava storycraft, the story-plan auditor and the
+Studio workflow. With a Codex CLI that supports plugins, install it from the
+Nava repository:
 
 ```sh
-codex plugin marketplace add navapbc/nava-agentic-demo-studio --ref v0.4.0
+codex plugin marketplace add navapbc/nava-agentic-demo-studio --ref v0.4.1
 codex plugin add nava-presentation-studio@nava-presentation-studio
 ```
 
-For the personal copy, substitute `gobrando/nava-agentic-demo-studio` in the
-marketplace command. The plugin provides instructions; clone this repository
-and run `npm ci` for its local recording and build runtime. Existing presentation
-templates remain authoritative. The starter theme is a Studio theme.
+The plugin provides instructions; the cloned repository and `npm ci` supply its
+local recording and build runtime. It is not required to run either CLI. See
+[OpenAI's plugin setup documentation](https://developers.openai.com/plugins/build/plugins)
+for marketplace setup. Existing presentation templates remain authoritative.
+The starter theme is a Studio theme.
 
 ## Choose your video style
 
@@ -94,30 +111,30 @@ with the orb hidden.
 | Cut dead time | `speed.cuts` removes source-time ranges entirely. Voice, captions, camera and all captured tabs follow one shared edit map; cuts that overlap narration or recorded actions are rejected |
 | Background and window | Mesh-gradient wallpapers (`nava`, `aurora`, `sunset`, `ocean`, `midnight`, `paper`) with film grain against banding, and a macOS browser window with traffic lights and a URL bar |
 | Title and closing cards | `intro` / `outro` cards in the script |
-| AI voiceover | Kokoro-82M, an Apache-2.0 neural voice, runs locally, faster than real time on an M1. macOS `say` is the fallback. The recorder paces the actions to the narration |
-| Background music | Five generated styles (`upbeat`, `synthwave`, `lofi`, `ambient`, `warm-pop`) with real sound design (drums, sidechain pumping, supersaws, FM electric piano, risers, vinyl). The arrangement follows the demo: a sparse intro under the title card, the groove on the reveal (tempo nudged so it lands on a bar line), a lift during fast-forwards, and a resolving outro. Or bring your own track (`music.file`), looped and loudness-matched. Always ducked under the voice, with no licensing |
+| AI voiceover | Kokoro-82M runs locally after a model download. macOS `say` and captions-only output are alternatives. The recorder paces the actions to the narration |
+| Background music | Five generated styles (`upbeat`, `synthwave`, `lofi`, `ambient`, `warm-pop`) with an arrangement that follows the demo and ducks under narration. Or supply a track you have permission to use with `music.file`; it is looped and loudness-matched |
 | Optional purple voice orb | Turn **Show voice orb** on or off in the preview. A code-rendered orb responds to narration; no image asset is required. Exports use your selection |
 | Voice-only video | Turn the orb off, pass `--orb off`, or set `presenter` to `false` in the script. Voiceover, music and captions continue |
 | Subtitles | Timed captions that highlight each word as it is spoken |
 | Record real windows | ScreenCaptureKit capture of any window or display, including browser chrome and extension side panels, with a recorded pointer log driving zoom and cursor |
-| Export | Frame-by-frame WebCodecs render to H.264/AAC MP4 at 1080p or 4K, 30 or 60 fps: deterministic, no dropped frames |
+| Export | Frame-by-frame WebCodecs render to H.264/AAC MP4 at 1080p or 4K, 30 or 60 fps, when the installed Chrome supports those encoders |
 
 ## Quick start
 
-Requires Node 20+ and Google Chrome. The neural voice (`kokoro-js`) is an
-optional dependency; the first run downloads the Kokoro model (about 330 MB)
-into `~/.cache/nava-demo-studio/models`. Without it, macOS `say` is used, and
-`"voice": { "provider": "none" }` renders captions with no voiceover.
+Requires Node 20.9+ and Google Chrome. From a clone of this repository:
 
 ```bash
-npm install
+npm ci
 npm run doctor
 npm run make
 ```
 
 `npm run make` records the bundled fictional benefits-portal fixture and writes
-`exports/benefits-portal.mp4` (about 40 s long, about 75 s to produce). Review it
-without opening a player:
+`exports/benefits-portal.mp4`. The example explicitly requests the optional
+`kokoro-js` voice; its first run downloads a model into
+`~/.cache/nava-demo-studio/models`. For an offline or captions-only run, change
+the example's voice provider to `none`. Build time depends on the machine,
+model cache and output settings. Review a contact sheet:
 
 ```bash
 node bin/demo-studio.mjs inspect exports/benefits-portal.mp4
@@ -129,7 +146,8 @@ Or scrub it interactively:
 npm run serve
 ```
 
-Open <http://127.0.0.1:4310/web/?project=/recordings/benefits-portal/project.json>.
+Paste `http://127.0.0.1:4310/web/?project=/recordings/benefits-portal/project.json`
+into Chrome's address bar.
 
 ## Making a demo (for agents)
 
@@ -218,21 +236,29 @@ There are three recorders. Pick one with `"recorder"` in the script:
 
 | Recorder | What it captures | Needs |
 | --- | --- | --- |
-| `page` (default) | The web page, headless | Nothing; runs anywhere |
-| `window` | A real Chrome window: the page plus an extension's side panel, each captured with the DevTools screencast and composited back into one window with drawn browser chrome | Nothing extra. Works unattended, while the window is covered or the Mac is locked |
-| `screen` | The true pixels of any window or display (real browser chrome, native apps) with ScreenCaptureKit | Screen Recording permission and an unlocked display |
+| `page` (default) | The web page, headless | Google Chrome; no Screen Recording permission |
+| `window` | A real Chrome window: the page plus an extension's side panel, each captured with the DevTools screencast and composited back into one window with drawn browser chrome | Google Chrome and the unpacked extension; no Screen Recording permission |
+| `screen` | The true pixels of any window or display (real browser chrome, native apps) with ScreenCaptureKit | macOS 13+, Xcode Command Line Tools, Screen Recording permission and an unlocked display |
 
 For an extension demo an agent records on its own, use `window`. Add
 `"extensions": ["path/to/unpacked"]` and `"sidePanel": true`, and target the
 panel with `"in": "sidepanel"`. `setup` steps run before capture starts, for
 example to pair a model runtime. A typed value can come from the environment
-(`"text": { "env": "NAVA_MODEL_BRIDGE_TOKEN" }`), so secrets never appear in the
-script or the video. `{ "do": "focus", "target": "#form" }` points the camera
+(`"text": { "env": "NAVA_MODEL_BRIDGE_TOKEN" }`), keeping it out of the script
+and trace. It can still appear in captured pixels: enter secrets only in masked
+controls during `setup`, before capture, and inspect the recording before sharing.
+`{ "do": "focus", "target": "#form" }` points the camera
 at something an agent is filling on its own. `{ "do": "wait", "for": "#phone", "until": "filled" }`
 waits for that agent to finish. See
 [examples/form-filler-extension.script.json](examples/form-filler-extension.script.json),
 which records the Nava Form-Filling Assistant filling a form with Claude
 through its subscription companion.
+
+Extension examples are integration templates, rather than self-contained first
+runs. They require a separate unpacked extension, its running local model
+companion and a pairing token. Update the extension path, endpoint and UI
+selectors for the version you have installed. None of those components is
+needed for the bundled benefits-portal example.
 
 ### Screen recording (real windows, native apps)
 
@@ -313,9 +339,13 @@ script.json --voice--> recordings/<slug>/voice/*.wav + manifest.json
 
 A trace may contain only timestamps, normalized pointer coordinates, event
 kinds, redacted step labels, and script-authored narration. `validateTrace`
-rejects any other field, so a typed value cannot slip into a trace, and the e2e
-test (`npm run e2e`) checks a real recording for the typed strings. Scripts must
-use synthetic demo data because typed values are visible in the video itself.
+rejects fields outside that schema, and the e2e test (`npm run e2e`) checks a
+real recording for its typed test strings. This is not automatic redaction of
+free text: keep labels and narration free of secrets. Scripts must use synthetic
+demo data because entered values, page content and URLs can be visible in the
+recording. A remote website or extension may receive entered data even though
+Studio has no recording-upload service. Inspect scripts, traces and the final
+media before sharing.
 
 ## Voice presence
 
@@ -355,6 +385,12 @@ demo workflow. Use only fictional likenesses.
 
 ## Known limits
 
+- Studio runs trusted local scripts, projects and web pages; it is not a
+  sandbox for untrusted input or a hosted multi-user service. Keep its preview
+  servers on loopback and stop them when finished. See [SECURITY.md](SECURITY.md).
+- macOS is the primary tested platform. Page capture and rendering use Chrome;
+  native screen capture is macOS-only. Other operating systems need separate
+  compatibility validation, including speech and H.264/AAC support.
 - The screen recorder needs macOS 13 or newer, the Xcode Command Line Tools
   (for `swiftc`), Screen Recording permission, and an unlocked display: macOS
   draws no windows while the screen is locked, and Chrome stops painting a
@@ -366,9 +402,11 @@ demo workflow. Use only fictional likenesses.
   `"browser": { "engine": "testing" }` to use Chrome for Testing instead.
   Chrome for Testing has no working component updater, so Gemini Nano only
   works in the Chrome engine.
-- Gemini Nano downloads once, about 4 GB, into the named profile
-  (`"browser": { "profile": "chrome-nano", "onDeviceAI": true }`). It does not
-  reuse the copy in your everyday Chrome profile.
+- On-device AI needs a compatible Chrome installation and device. With
+  `"browser": { "profile": "chrome-nano", "onDeviceAI": true }`, any model
+  download belongs to that named profile; it does not reuse your everyday
+  Chrome profile. The flag requests the browser feature rather than guaranteeing
+  model availability. Allow time and disk space for the browser's download.
 - Kokoro has no word timings, so caption word timings are estimated. Review
   caption pacing with the exported narration before sharing.
 - Legacy `rawVideo` projects (a `.mov`/`.mp4` plus a hand-written trace) still
@@ -384,3 +422,17 @@ npm run e2e
 `npm test` runs the unit tests and needs no browser. `npm run e2e` records and
 renders a short demo, builds a presentation and checks embedded media and
 browser playback; it needs Chrome.
+
+## Contributing and credits
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development checks and media review.
+The Studio source is licensed under [MIT](LICENSE). The copied Nava presentation
+guidance and its source revision are recorded in
+[SOURCE_PROVENANCE.json](SOURCE_PROVENANCE.json). Installed libraries and
+downloaded speech models have their own licenses; review those when
+redistributing them or adding media.
+
+The illustrative screenshots use synthetic applicant data on BenefitsCal,
+Riverside University Health System WIC and Riverside County IHSS pages. They
+show the recorder workflow and do not imply endorsement by those services.
+Screen Studio is a design reference; this is an independent Nava project.

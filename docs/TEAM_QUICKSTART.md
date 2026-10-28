@@ -1,22 +1,41 @@
 # Make a presentation and product demo locally
 
-The recorder, editor, music generator and MP4 exporter are MIT licensed and run
-locally. No Screen Studio purchase, paid video service or AI subscription is
-required. Kokoro narration runs locally after its first model download; `say`
-is the macOS fallback. Product agents used in an extension demo are separate
-from the video tools and may require an account or subscription.
+The recorder, editor, music generator and MP4 exporter run locally. No Screen
+Studio purchase, paid video service or model API is required. This is an
+experimental authoring tool, primarily tested on macOS with Chrome. Product
+agents used in a demo are separate and may require an account or subscription.
+
+## Install
+
+Install Node 20.9+ and Google Chrome, then clone the Nava repository:
+
+```sh
+git clone https://github.com/navapbc/nava-agentic-demo-studio.git
+cd nava-agentic-demo-studio
+npm ci
+npm run doctor
+```
+
+The bundled example explicitly requests Kokoro narration. Its first narrated
+build downloads a speech model and needs network access. For a captions-only
+or offline build, set `"voice": { "provider": "none" }` in
+`examples/benefits-portal.script.json` first. On macOS, `"provider": "say"` uses
+the installed system voice. `doctor` checks Chrome and codecs, not the Kokoro
+model. See [known limits](../README.md#known-limits) if setup fails.
 
 ## First presentation
 
-After cloning and installing as shown below, run:
+From the installed checkout, run:
 
 ```sh
 npm run presentation
 node bin/presentation-studio.mjs serve exports/presentation
 ```
 
-Open <http://127.0.0.1:4311/index.html>. The output folder includes an editable
-PowerPoint with its demo embedded, a browser presentation, a PDF with video
+Paste `http://127.0.0.1:4311/index.html` into Chrome's address bar. The local
+server blocks cross-site navigation, so clicking a localhost link on GitHub can
+be blocked. The output folder includes an editable PowerPoint with its demo
+embedded, a browser presentation, a PDF with video
 posters and `presentation.zip` for sharing. The example records a fictional
 portal using synthetic data. Review every slide and play the embedded clip
 before sharing. You can also reuse an existing MP4 without recording again.
@@ -24,7 +43,7 @@ before sharing. You can also reuse an existing MP4 without recording again.
 Install the combined storycraft and demo workflow in Codex:
 
 ```sh
-codex plugin marketplace add navapbc/nava-agentic-demo-studio --ref v0.4.0
+codex plugin marketplace add navapbc/nava-agentic-demo-studio --ref v0.4.1
 codex plugin add nava-presentation-studio@nava-presentation-studio
 ```
 
@@ -35,18 +54,15 @@ Then ask your agent:
 > build editable slides with the demos included, and inspect the complete output.
 > Use synthetic data for recordings and include the scope of any evidence claims.
 
-The plugin is guidance; the cloned repo supplies the local build runtime. See
+The plugin is optional guidance; the cloned repo supplies the local build
+runtime. These commands need a Codex CLI with plugin support. See
 [the presentation system guide](PRESENTATION_SYSTEM.md) for custom manifests.
 
 ## First video
 
-Install Node 20+ and Google Chrome. Clone either repository you have access to:
+From the same checkout, run:
 
 ```sh
-git clone https://github.com/navapbc/nava-agentic-demo-studio.git
-cd nava-agentic-demo-studio
-npm ci
-npm run doctor
 npm run make
 node bin/demo-studio.mjs inspect exports/benefits-portal.mp4
 ```
@@ -54,8 +70,8 @@ node bin/demo-studio.mjs inspect exports/benefits-portal.mp4
 The example uses a bundled fictional portal and synthetic applicant data. The
 purple voice orb responds to the narration; no face image is used. The export
 is `exports/benefits-portal.mp4`. Look at the generated contact sheet and
-play the MP4 before sharing it. On machines without a speech engine, set
-`"voice": { "provider": "none" }` in your script to use captions.
+play the MP4 before sharing it. Build time varies with the machine, model
+download/cache and output settings.
 
 ## Give your agent this prompt
 
@@ -92,10 +108,15 @@ node bin/demo-studio.mjs make examples/benefits-portal.script.json --orb off
 node bin/demo-studio.mjs render recordings/benefits-portal/project.json exports/benefits-portal-voice-only.mp4 --orb off
 ```
 
-Recordings, models, credentials and exports stay out of Git. Use synthetic data
+Keep recordings, models, credentials and exports out of Git. Use synthetic data
 even when recording official sites. Keep final submission and CAPTCHA completion
-with a human. The studio never uploads recordings, but any remote website you
-interact with may receive the entered data.
+with a human. Studio has no recording-upload service, but any remote website or
+extension may receive entered data. Environment-sourced text stays out of the
+script and trace; it may still be visible on screen. Inspect the resulting media.
+
+Run only trusted scripts and projects. The preview is a local development
+server, not a hosted multi-user service. See [security guidance](../SECURITY.md)
+and [contribution checks](../CONTRIBUTING.md).
 
 See [editing guidance](EDITING.md) for a repeatable way to tighten an existing
 recording without another live run.

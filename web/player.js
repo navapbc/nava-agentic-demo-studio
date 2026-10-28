@@ -2,6 +2,7 @@ import { renderMix } from './audio.js';
 import { Compositor } from './compositor.js';
 import { VoiceOrb } from './presenter.js';
 import { renderToMp4 } from './render.js';
+import { localAssetUrl } from './local-assets.js';
 import { withOrbVisibility } from '/lib/presenter-config.mjs';
 
 const canvas = document.querySelector('#stage');
@@ -32,7 +33,7 @@ const format = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms / 1000
 const now = () => (playing ? startOffset + ((audioContext.currentTime - startedAt) * 1000) : pausedAt);
 
 function paint(outMs) {
-  compositor.prefetch(outMs + 50);
+  compositor.prefetch(outMs + 50, outMs);
   compositor.draw(context, outMs);
   scrubber.value = String(Math.round((outMs / compositor.duration) * 1000));
   time.value = `${format(outMs)} / ${format(compositor.duration)}`;
@@ -77,7 +78,7 @@ async function play() {
 async function load() {
   const path = new URLSearchParams(location.search).get('project');
   if (!path) return;
-  project = await fetch(path).then((response) => response.json());
+  project = await fetch(localAssetUrl(path), { redirect: 'error' }).then((response) => response.json());
   document.querySelector('#title').textContent = project.title;
   document.title = `${project.title} · Demo Studio`;
   canvas.width = project.output?.width || 1920;

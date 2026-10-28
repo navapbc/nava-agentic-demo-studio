@@ -73,6 +73,7 @@ window at 1×. Silence from the last planning narration to the first write is
 verified write. Both site captures use the same cuts. The edit removes planning,
 post-fill rescan waits and excess ending hold; it never redraws form pixels.
 
-Before sharing, verify the first shot keeps the orb visible, required choices
-are visibly selected, the closing review stays framed steadily, narration isn't
-clipped, and the video contains no silent holds beyond what the viewer needs.
+Before sharing, verify the chosen orb or voice-only layout stays clear,
+required choices are visibly selected, the closing review stays framed steadily,
+narration isn't clipped, and the video contains no silent holds beyond what the
+viewer needs.

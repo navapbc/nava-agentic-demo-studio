@@ -1,6 +1,6 @@
 {
   "name": "nava-agentic-demo-studio",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "type": "module",
   "description": "Local product presentations with editable slides and polished demos included.",
@@ -19,7 +19,7 @@
     "presentation": "node bin/presentation-studio.mjs build examples/presentation-system.presentation.json --out exports/presentation"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.9.0"
   },
   "license": "MIT",
   "dependencies": {
@@ -30,5 +30,9 @@
   },
   "optionalDependencies": {
     "kokoro-js": "^1.2.1"
+  },
+  "overrides": {
+    "image-size": "2.0.4",
+    "sharp": "0.35.5"
   }
 }
