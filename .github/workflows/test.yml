@@ -3,15 +3,20 @@ on:
   push:
     branches: [main]
   pull_request:
+permissions:
+  contents: read
 jobs:
   unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci --omit=optional
+      - run: npm audit --include=optional --audit-level=moderate
       - run: npm run check
       - run: npm test

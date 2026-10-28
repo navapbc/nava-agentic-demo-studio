@@ -12,13 +12,14 @@
     // Renders a presenter rig at several mouth and eyelid states so a rig can be
     // tuned (or checked by an agent) without rendering a whole video.
     import { Presenter } from './presenter.js';
+    import { localAssetUrl } from './local-assets.js';
 
     const state = (window.__demoStudio = { status: 'starting' });
     const params = new URLSearchParams(location.search);
     try {
       const rigUrl = params.get('rig');
       if (!rigUrl) throw new Error('Supply an explicit local rig path with ?rig=/path/to/rig.json.');
-      const rig = await fetch(rigUrl).then((response) => response.json());
+      const rig = await fetch(localAssetUrl(rigUrl), { redirect: 'error' }).then((response) => response.json());
       const image = params.get('image') || new URL(rig.image, new URL(rigUrl, location.href)).pathname;
       const presenter = await Presenter.load(image, rig);
       const size = Number(params.get('size') || 420);

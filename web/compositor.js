@@ -81,19 +81,29 @@ class FrameSequence {
     return this.pending.get(index);
   }
 
-  evictBefore(index) {
+  evictBefore(index, retained) {
     for (const key of [...this.pending.keys()]) {
-      if (key >= index - 1 && key <= index + 1) continue;
+      if ((key >= index - 1 && key <= index + 1) || retained.has(key)) continue;
       this.ready.get(key)?.close();
       this.ready.delete(key);
       this.pending.delete(key);
     }
   }
 
-  async prepare(sourceMs, exact) {
+  async prepare(sourceMs, exact, retainedTimes = []) {
     const index = frameIndexAt(this.frames, sourceMs);
     if (index < 0) return;
-    this.evictBefore(index);
+    const retained = new Set(retainedTimes.map((time) => frameIndexAt(this.frames, time)));
+    if (!exact) {
+      // Preview decoding is asynchronous: keep the eligible displayed bitmap
+      // while its replacement/lookahead loads, using current()'s same bounds.
+      for (const target of [index, ...retained]) {
+        for (let cursor = target; cursor >= Math.max(0, target - 30); cursor -= 1) {
+          if (this.ready.has(cursor)) { retained.add(cursor); break; }
+        }
+      }
+    }
+    this.evictBefore(index, retained);
     for (let ahead = 1; ahead <= 1 && index + ahead < this.frames.length; ahead += 1) this.decode(index + ahead);
     const current = this.decode(index);
     if (exact) await current;
@@ -126,8 +136,8 @@ class LayeredFrames {
     this.drawn = [];
   }
 
-  async prepare(sourceMs, exact) {
-    await Promise.all(this.layers.map((layer) => layer.sequence.prepare(sourceMs, exact)));
+  async prepare(sourceMs, exact, retainedTimes = []) {
+    await Promise.all(this.layers.map((layer) => layer.sequence.prepare(sourceMs, exact, retainedTimes)));
     if(this.parallelEnabled) await Promise.all(this.parallelLayers.map((layer) => layer.sequence.prepare(this.parallelSourceMs ?? sourceMs, exact)));
   }
 
@@ -360,13 +370,17 @@ export class Compositor {
     if (!this.source) return;
     this.source.parallelSourceMs=Math.min(this.sourceTime(outMs),this.project.parallel?.freezeSourceMs ?? Infinity);
     this.source.parallelEnabled=Boolean(this.project.parallel&&outMs>=this.project.parallel.startMs-100&&outMs<=this.project.parallel.endMs+100);
-    if (motionBlur) await this.source.prepare(this.sourceTime(outMs - (this.shutterMs / 2)), true);
-    await this.source.prepare(this.sourceTime(outMs), true);
-    if (motionBlur) await this.source.prepare(this.sourceTime(outMs + (this.shutterMs / 2)), true);
+    // Keep every bitmap this draw will sample alive until drawing finishes.
+    // A shutter can cross many frame indices during acceleration or a cut.
+    const sourceTimes = [...new Set([outMs, ...this.sceneSampleTimes(outMs, motionBlur)].map((time) => this.sourceTime(time)))];
+    for (const sourceMs of sourceTimes) await this.source.prepare(sourceMs, true, sourceTimes);
   }
 
-  prefetch(outMs) {
-    this.source?.prepare(this.sourceTime(outMs), false).catch(() => {});
+  prefetch(outMs, displayMs = outMs) {
+    if (!this.source) return;
+    this.source.parallelSourceMs = Math.min(this.sourceTime(displayMs), this.project.parallel?.freezeSourceMs ?? Infinity);
+    this.source.parallelEnabled = Boolean(this.project.parallel && displayMs >= this.project.parallel.startMs - 100 && displayMs <= this.project.parallel.endMs + 100);
+    this.source.prepare(this.sourceTime(outMs), false, [this.sourceTime(displayMs)]).catch(() => {});
   }
 
   paintBackdrop() {
@@ -606,9 +620,14 @@ export class Compositor {
     return Math.max(distance(from.corners[0], to.corners[0]), distance(from.corners[1], to.corners[1]), distance(from.cursor, to.cursor));
   }
 
+  sceneSampleTimes(outMs, motionBlur = true) {
+    const samples = motionBlur ? clamp(Math.ceil(this.motionAt(outMs) / 3), 1, 10) : 1;
+    return samples === 1 ? [outMs] : Array.from({ length: samples }, (_, index) => outMs + (((index / (samples - 1)) - 0.5) * this.shutterMs));
+  }
+
   drawBlurredScene(context, outMs) {
-    const samples = clamp(Math.ceil(this.motionAt(outMs) / 3), 1, 10);
-    if (samples === 1) {
+    const times = this.sceneSampleTimes(outMs);
+    if (times.length === 1) {
       this.drawScene(context, outMs);
       return;
     }
@@ -622,8 +641,8 @@ export class Compositor {
     }
     const target = this.blurTarget.getContext('2d');
     const layer = this.blurLayer.getContext('2d');
-    for (let index = 0; index < samples; index += 1) {
-      const t = outMs + (((index / (samples - 1)) - 0.5) * this.shutterMs);
+    for (let index = 0; index < times.length; index += 1) {
+      const t = times[index];
       layer.setTransform(1, 0, 0, 1, 0, 0);
       layer.clearRect(0, 0, width, height);
       this.drawScene(layer, t);

@@ -45,7 +45,7 @@ content and numeric evidence without sources and scope. It checks that every
 clip decodes, measures the browser composition, then uses those positions for
 native PowerPoint objects.
 
-The combined plugin is available from either Studio repository; installation
+The combined plugin is available from the Nava Studio repository; installation
 commands are in [README](../README.md). Nava storycraft references and the auditor
 are copied from `navapbc/nava-presentation-toolkit` at the commit recorded in
 [SOURCE_PROVENANCE.json](../SOURCE_PROVENANCE.json). The standalone toolkit

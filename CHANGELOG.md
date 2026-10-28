@@ -1,5 +1,26 @@
 # Releases
 
+## 0.4.1 — Local server protections and setup
+
+- Restrict local preview/export requests by host and browser origin; block
+  hidden files and static symlinks that resolve outside the served root.
+- Reject cross-site navigation and framing. Keep project JSON requests on the
+  same origin and reject redirects.
+- Enforce the export size limit while streaming, write through unique private
+  temporary files and clean up failed or aborted exports.
+- Pass macOS speech text through standard input to prevent narration from
+  being interpreted as command options.
+- Validate recording paths before replacing frames and close preview servers
+  when browser launch fails.
+- Retain the source frames needed by each motion-blur sample, avoiding blank
+  frames during accelerated playback and across cuts.
+- Update vulnerable transitive image dependencies, require Node 20.9+ and add
+  a dependency-audit check to CI.
+- Clarify Nava setup, optional speech/model downloads, integration examples,
+  local trust boundaries and what can remain visible in recordings.
+- Add contribution and private vulnerability-reporting guidance, retain
+  synthetic fixtures and document screenshot/source credits.
+
 ## 0.4.0 — Nava Presentation Studio
 
 - Combine Nava storycraft and the product demo workflow in one installable plugin.
